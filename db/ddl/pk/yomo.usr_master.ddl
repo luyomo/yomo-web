@@ -1,0 +1,1 @@
+alter table yomo.usr_master add PRIMARY KEY (role_name);

@@ -1,0 +1,17 @@
+/system/new-page/template-001,11,1,stretchH,'all',f
+/system/new-page/template-001,11,2,width,1000,f
+/system/new-page/template-001,11,3,autoWrapRow,true,f
+/system/new-page/template-001,11,4,height,700,f
+/system/new-page/template-001,11,5,startRows,1,f
+/system/new-page/template-001,11,6,maxRows,10000,f
+/system/new-page/template-001,11,7,rowHeaders,true,f
+/system/new-page/template-001,11,8,readOnly,true,f
+/system/new-page/template-001,11,10,name,New page Data,f
+/system/new-page/template-001,11,12,saveData,/web-bg/api/pg-table-data.rest,f
+/system/new-page/template-001,11,15,lokiData,true,f
+/system/new-page/template-001,11,13,initData,/xxxx/api/pg-table-data.rest,t
+/system/new-page/template-001,11,16,bindName,schema_name.table_name,t
+/system/new-page/template-002,11,2,width,1000,f
+/system/new-page/template-002,11,4,height,500,f
+/system/new-page/template-001,11,9,contextMenu,"object:[""row_above"", ""row_below"", ""remove_row"", ""save_data""]",f
+/system/new-page/template-003,11,1,onClick,onButtonClick(),f

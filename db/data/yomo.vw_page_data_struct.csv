@@ -1,0 +1,58 @@
+90000,/index,jade_template,leaf,fetch_jade_template,f,\N,yomo,2018-04-11 08:34:55.461109,yomo,2018-04-11 08:35:15.561547
+90110,/system/new-page/template-001/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomo,2018-04-11 08:34:55.461109,yomo,2018-04-11 08:35:15.561547
+90120,/system/new-page/template-001/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomo,2018-04-11 08:34:55.461109,yomo,2018-04-11 08:35:15.561547
+90130,/system/new-page/template-001/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomo,2018-04-11 08:34:55.461109,yomo,2018-04-11 08:35:15.561547
+90100,/system/new-page/template-001/main.html,template-03,template,\N,f,template name,yomo,2018-04-11 08:34:55.461109,yomo,2018-04-11 08:35:15.561547
+90102,template-03,jade_template,leaf,fetch_jade_template,f,jade template,yomo,2018-04-11 08:34:55.461109,yomo,2018-04-11 08:35:15.561547
+90210,/system/maintenance/excel/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomo,2018-04-11 12:06:47.613086,yomo,2018-04-11 12:06:47.613086
+90220,/system/maintenance/excel/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomo,2018-04-11 12:06:47.613086,yomo,2018-04-11 12:06:47.613086
+90230,/system/maintenance/excel/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomo,2018-04-11 12:06:47.613086,yomo,2018-04-11 12:06:47.613086
+90200,/system/maintenance/excel/main.html,template-03,template,\N,f,template name,yomo,2018-04-11 12:06:47.613086,yomo,2018-04-11 12:06:47.613086
+90310,/system/maintenance/ajax-request/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomo,2018-04-18 10:14:23.402447,yomo,2018-04-18 10:14:23.402447
+90320,/system/maintenance/ajax-request/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomo,2018-04-18 10:14:23.402447,yomo,2018-04-18 10:14:23.402447
+90330,/system/maintenance/ajax-request/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomo,2018-04-18 10:14:23.402447,yomo,2018-04-18 10:14:23.402447
+90300,/system/maintenance/ajax-request/main.html,template-03,template,\N,f,template name,yomo,2018-04-18 10:14:23.402447,yomo,2018-04-18 10:14:23.402447
+90410,/system/maintenance/include-file/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomo,2018-04-18 10:16:13.662606,yomo,2018-04-18 10:16:13.662606
+90420,/system/maintenance/include-file/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomo,2018-04-18 10:16:13.662606,yomo,2018-04-18 10:16:13.662606
+90430,/system/maintenance/include-file/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomo,2018-04-18 10:16:13.662606,yomo,2018-04-18 10:16:13.662606
+90400,/system/maintenance/include-file/main.html,template-03,template,\N,f,template name,yomo,2018-04-18 10:16:13.662606,yomo,2018-04-18 10:16:13.662606
+90510,/system/User/permission/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomo,2018-04-18 10:20:01.106686,yomo,2018-04-18 10:20:01.106686
+90520,/system/User/permission/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomo,2018-04-18 10:20:01.106686,yomo,2018-04-18 10:20:01.106686
+90530,/system/User/permission/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomo,2018-04-18 10:20:01.106686,yomo,2018-04-18 10:20:01.106686
+90500,/system/User/permission/main.html,template-03,template,\N,f,template name,yomo,2018-04-18 10:20:01.106686,yomo,2018-04-18 10:20:01.106686
+90610,/system/User/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomo,2018-04-18 10:24:08.415167,yomo,2018-04-18 10:24:08.415167
+90620,/system/User/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomo,2018-04-18 10:24:08.415167,yomo,2018-04-18 10:24:08.415167
+90630,/system/User/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomo,2018-04-18 10:24:08.415167,yomo,2018-04-18 10:24:08.415167
+90600,/system/User/main.html,template-03,template,\N,f,template name,yomo,2018-04-18 10:24:08.415167,yomo,2018-04-18 10:24:08.415167
+90710,/system/maintenance/button/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomo_test,2018-08-28 08:33:54.100315,yomo_test,2018-08-28 08:33:54.100315
+90720,/system/maintenance/button/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomo_test,2018-08-28 08:33:54.100315,yomo_test,2018-08-28 08:33:54.100315
+90730,/system/maintenance/button/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomo_test,2018-08-28 08:33:54.100315,yomo_test,2018-08-28 08:33:54.100315
+90700,/system/maintenance/button/main.html,template-03,template,\N,f,template name,yomo_test,2018-08-28 08:33:54.100315,yomo_test,2018-08-28 08:33:54.100315
+95110,/example/excel/exp-01/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomo,2018-04-19 13:55:40.467441,yomo,2018-04-19 13:55:40.467441
+95120,/example/excel/exp-01/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomo,2018-04-19 13:55:40.467441,yomo,2018-04-19 13:55:40.467441
+95130,/example/excel/exp-01/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomo,2018-04-19 13:55:40.467441,yomo,2018-04-19 13:55:40.467441
+95100,/example/excel/exp-01/main.html,template-03,template,\N,f,template name,yomo,2018-04-19 13:55:40.467441,yomo,2018-04-19 13:55:40.467441
+95310,/example/chart/pie/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomo,2018-04-19 14:20:06.961994,yomo,2018-04-19 14:20:06.961994
+95320,/example/chart/pie/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomo,2018-04-19 14:20:06.961994,yomo,2018-04-19 14:20:06.961994
+95330,/example/chart/pie/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomo,2018-04-19 14:20:06.961994,yomo,2018-04-19 14:20:06.961994
+95300,/example/chart/pie/main.html,template-03,template,\N,f,template name,yomo,2018-04-19 14:20:06.961994,yomo,2018-04-19 14:20:06.961994
+95410,/example/chart/candlestick/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomo,2018-04-19 14:24:15.365757,yomo,2018-04-19 14:24:15.365757
+95420,/example/chart/candlestick/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomo,2018-04-19 14:24:15.365757,yomo,2018-04-19 14:24:15.365757
+95430,/example/chart/candlestick/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomo,2018-04-19 14:24:15.365757,yomo,2018-04-19 14:24:15.365757
+95400,/example/chart/candlestick/main.html,template-03,template,\N,f,template name,yomo,2018-04-19 14:24:15.365757,yomo,2018-04-19 14:24:15.365757
+95210,/example/chart/bar/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomo,2018-04-20 01:14:52.850343,yomo,2018-04-20 01:14:52.850343
+95220,/example/chart/bar/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomo,2018-04-20 01:14:52.850343,yomo,2018-04-20 01:14:52.850343
+95230,/example/chart/bar/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomo,2018-04-20 01:14:52.850343,yomo,2018-04-20 01:14:52.850343
+95200,/example/chart/bar/main.html,template-03,template,\N,f,template name,yomo,2018-04-20 01:14:52.850343,yomo,2018-04-20 01:14:52.850343
+95510,/example/gapi/driver/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomo_test,2018-08-26 05:33:10.598842,yomo_test,2018-08-26 05:33:10.598842
+95520,/example/gapi/driver/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomo_test,2018-08-26 05:33:10.598842,yomo_test,2018-08-26 05:33:10.598842
+95530,/example/gapi/driver/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomo_test,2018-08-26 05:33:10.598842,yomo_test,2018-08-26 05:33:10.598842
+95500,/example/gapi/driver/main.html,template-03,template,\N,f,template name,yomo_test,2018-08-26 05:33:10.598842,yomo_test,2018-08-26 05:33:10.598842
+95610,/example/excel/data-crypt/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomo_test,2018-08-27 04:57:54.862925,yomo_test,2018-08-27 04:57:54.862925
+95620,/example/excel/data-crypt/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomo_test,2018-08-27 04:57:54.862925,yomo_test,2018-08-27 04:57:54.862925
+95630,/example/excel/data-crypt/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomo_test,2018-08-27 04:57:54.862925,yomo_test,2018-08-27 04:57:54.862925
+95600,/example/excel/data-crypt/main.html,template-03,template,\N,f,template name,yomo_test,2018-08-27 04:57:54.862925,yomo_test,2018-08-27 04:57:54.862925
+95700,/example/excel/gapi-chat/main.html,template-03,template,\N,f,template name,yomoweb,2019-04-05 00:21:31.150901,yomoweb,2019-04-05 00:21:31.150901
+95710,/example/excel/gapi-chat/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition,yomoweb,2019-04-05 00:21:31.150901,yomoweb,2019-04-05 00:21:31.150901
+95720,/example/excel/gapi-chat/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition,yomoweb,2019-04-05 00:21:31.150901,yomoweb,2019-04-05 00:21:31.150901
+95730,/example/excel/gapi-chat/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition,yomoweb,2019-04-05 00:21:31.150901,yomoweb,2019-04-05 00:21:31.150901

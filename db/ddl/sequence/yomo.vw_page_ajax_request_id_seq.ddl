@@ -1,0 +1,1 @@
+create sequence yomo.vw_page_ajax_request_id_seq INCREMENT by 1 MINVALUE 1 MAXVALUE 9223372036854775807;

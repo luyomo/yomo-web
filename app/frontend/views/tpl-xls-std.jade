@@ -1,0 +1,296 @@
+include frame
+  #cmdInput(align="left")
+    div(align="left")
+      //label.ui.big.red.ribbon.label  !{(JSON.stringify(other_data.page_title[0].display) + "(" + JSON.stringify(env_name) + ")").replace(/"/g, "")}
+
+      br
+
+  #inpContainer
+
+  #xlsContainer(align="left")
+  #jsonCompContainer(align="left")
+    div(align="left")
+
+    #loader
+
+    style.
+      .bar {
+        fill: steelblue;
+      }
+      .bar:hover {
+        fill: brown;
+      }
+      .axis--x path {
+        display: none;
+      }
+
+
+      path.candle {
+        stroke: #000000;
+      }
+
+      path.candle.body {
+        stroke-width: 0;
+      }
+
+      path.candle.up {
+        fill: #00AA00;
+        stroke: #00AA00;
+      }
+
+      path.candle.down {
+        fill: #FF0000;
+        stroke: #FF0000;
+      }
+      .handsontableInputHolder
+      {
+        z-index:110;
+      }
+      .handsontable.autocompleteEditor
+      {
+        border: 1px solid #AAAAAA;
+        box-shadow: 10px 10px 15px #AAAAAA;
+        background-color: white;
+        min-width: 200px;
+      }
+      .handsontable.autocompleteEditor.handsontable
+      {
+        padding-right: 0px;
+      }
+      .handsontable.listbox .ht_master table
+      {
+        border: none;
+      }
+      .autocompleteEditor .wtHolder 
+      {
+        min-width: 200px;
+      }
+
+    script.
+      (function(i,s,o,g,r,a,m){
+        i['GoogleAnalyticsObject']=r;
+        i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();
+          a=s.createElement(o), m=s.getElementsByTagName(o)[0];
+          a.async=1;
+          a.src=g;
+          m.parentNode.insertBefore(a,m);
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-7002862-5', 'jaredly.github.io');
+      ga('send', 'pageview');
+
+
+      var loki = new loki("sandbox.db");
+      var ddlDef = loki.addCollection("ddlDef");
+
+      // Authentication
+      const apiKey = '#{api_key}';
+      const discoveryDocs = ["#{discovery_docs}"];
+      //const discoveryDocs = ["https://people.googleapis.com/$discovery/rest?version=v1"];
+      const clientId = '#{client_id}';
+      //const scopes = 'https://www.googleapis.com/auth/plus.me';
+      const scopes = '#{scope}';
+      var userInfo = null;
+
+      String.prototype.format = function() {
+        var s = this;
+        for(k in arguments){
+          s = s.replace("{" + k + "}", arguments[k]);
+        }
+        return s;
+      };
+
+      if (typeof String.prototype.parseFunction != 'function') {
+        String.prototype.parseFunction = function () {
+          var funcReg = /function *\(([^()]*)\)[ \n\t]*{(.*)}/gmi;
+          var match = funcReg.exec(this.replace(/\n/g, ' '));
+
+          if(match) {
+            return new Function(match[1].split(','), match[2]);
+          }
+
+          return null;
+        };
+      }
+
+      const hideDispDIV = (__divID) => {
+        if($('#' + __divID).is(":visible"))
+          $('#' + __divID).hide();
+        else
+          $('#' + __divID).show();
+      };
+
+      window.onPagePermission = (_cmptUid, _res) => { document.cookie = "userAccess=" + _res.data + ";path=/" }
+
+      document.addEventListener("DOMContentLoaded", function() {
+
+        //----------------------------------------------------------------------
+        // ID: 0
+        // Subject: Get all the user data
+        // Flow:
+        // LEVEL 01: AJAX -> config -> handsontable -> change event
+        const rxInpDef = Rx.Observable.ajax("yomo-inp-def.ajax")
+          .concatMap(e => e.response.user_data)
+          .map(_x =>  {
+            console.log("Entered the yomo-inp-def.ajax %s", JSON.stringify(_x));
+            var btn = document.createElement(_x.comp_type);
+            btn.id = _x.cmpt_uid;
+            if(_x.comp_type === "button"){
+              btn.className = "button ui blue button";
+            }else if(_x.comp_type === "input"){
+              btn.className = "ui action input";
+            }
+            btn.appendChild(document.createTextNode(_x.cmpt_name));
+            _(_x.col_attrs).forOwn((_v, _k) => {btn.setAttribute(_k, _v)});
+            document.querySelector('#inpContainer').appendChild(btn);
+
+            return;
+          });
+
+        //----------------------------------------------------------------------
+        // ID: 1
+        // Subject: Get all the user data
+        // Flow:
+        // LEVEL 01: AJAX -> config -> handsontable -> change event
+        const __rx_renderXls = Rx.Observable.ajax("yomo-xls-def.ajax")
+          .map(_x => {
+            //const __f__wrapDivName = (_divName) => "div-" + _divName
+            const __f_addDiv = (_xls_conf) => {
+              $("#xlsContainer")
+                .append("<div><label class='ui big red ribbon label' onclick=hideDispDIV('{1}')>{0}</label></div>".format(_xls_conf.xls_name,  "div-" + _xls_conf.xls_id));
+
+              if(_xls_conf.comp_type === "excel"){
+                var iDiv = document.createElement('div');
+                document.querySelector('#xlsContainer').appendChild(iDiv);
+                iDiv.id = "div-" + _xls_conf.xls_id;
+                //console.log("The div name is <%s>", iDiv.id);
+              } else if (_xls_conf.comp_type === "chart"){
+                const __svg = d3.select("#xlsContainer").append("svg").attr("id", "div-" + _xls_conf.xls_id);
+                console.log("The id to add is <%s>", _xls_conf.xls_id);
+                _.forEach(_xls_conf.xls_conf, (_v, _k) => { __svg.attr(_k, _v)});
+              }
+
+              // - console.log("The name and is is <%s> and <%s>", _xls_conf.xls_name, _xls_conf.xls_id);
+              return _xls_conf;
+            };
+
+            const __f_renderXls = (_xls_conf) => {
+              console.log("The rending xls <%s>", _xls_conf);
+              if(_xls_conf.comp_type === "excel"){
+                return Rx.Observable.of(_xls_conf).map(_xls_conf => {
+
+                  //- Convert the string to object only for source attribute
+                  _(_xls_conf.xls_conf.columns).map(_col => { if (_.has(_col, "source")) {_col.source = JSON.parse(_col.source);}   }).value();
+                  _xls_conf.xls_conf.columns = _.map(_xls_conf.xls_conf.columns, _v => {
+                    return _.mapValues(_v, __v => {
+                      if(typeof(__v) === "string" && (__parsedStr = __v.match(/^object:(.*)/)) ){ return JSON.parse(__parsedStr[1]); }
+                      if(typeof(__v) === "string" && (__parsedStr = __v.match(/^function:(.*)/)) ){ return window[__parsedStr[1]]; }
+
+                      return __v;
+                    });
+                  });
+
+                  const __parsedConf = _.transform(_xls_conf.xls_conf, (_r, _v, _k)=>{
+                    _r[_k] = ((typeof(_v) === "string") && (__parseStr = _v.match(/^object:(.*)/)))?JSON.parse(__parseStr[1]):_v;
+                  });
+                
+                  $("#div-" + _xls_conf.xls_id).handsontable(__parsedConf ); 
+              } );
+              }else if(_xls_conf.comp_type === "chart"){
+                return Rx.Observable.of(_xls_conf).map(_xls_conf => {
+                  //yomoChart.drawBar("#" + _xls_conf.xls_id , {data: [{"xLabel": "test01", "yValue": 1000}, {"xLabel": "test02", "yValue": 1000}, { "xLabel":"test03", "yValue" : 500}]});
+                });
+              }
+            };
+
+            var __rxRenderXls = _(_x.response.user_data).map(_e => __f_addDiv(_e.xls_conf[0]))
+                .map(__f_renderXls)
+              .value();
+            //- console.log("The ourput is <%s>", JSON.stringify(__rxRenderXls));
+            //- console.log("All the configuration is <%s>", JSON.stringify(_x.response.user_data));
+
+            Rx.Observable
+              .combineLatest(__rxRenderXls)
+              .subscribe(_e => { 
+                  console.log("The return is <%s>", __rxRenderXls);
+                  console.log("hello The ret is <%s>", JSON.stringify(_e));
+                  window["afterMainLoad"]
+               && (typeof window["afterMainLoad"] === "function")
+               && window["afterMainLoad"].call(null).value();
+            });
+          });
+          //- .subscribe(_res => console.log("Complete"));
+
+        //----------------------------------------------------------------------
+        // ID: 3
+        // Subject: Get all the ajax data
+        // Flow:
+        // LEVEL 01:
+        const __rx_ajaxData = Rx.Observable.ajax("yomo-ajax-master.ajax")
+          .map(_x =>  {
+            const __f_oneAjax = (_ajax_req) => {
+              _ajax_req = _ajax_req.ajax_url;
+              // - console.log("******The output request is <%s>, <%s> and <%s> <%s>", _ajax_req.ajax_url, _ajax_req.type, _ajax_req.parameters, _ajax_req.cmpt_uid);
+              $.ajax({url: _ajax_req.ajax_url, type: _ajax_req.type, data: _ajax_req.parameters, contentType: "application/json"
+                , success: _r => {
+                    const __callback = _.reduce(_ajax_req.callback.split("."), (_res, _e) => _res[_e], window);
+
+                    console.log("The chart data is <%s>", JSON.stringify(_r));
+                    if(__callback){ __callback("div-"+_ajax_req.cmpt_uid, _r); return;}
+
+                    const defaultFunc = (_comp, _data) => {$("#" + _comp).handsontable("loadLoki", _data); };
+                    defaultFunc("div-" + _ajax_req.cmpt_uid, _r);
+                  }});
+
+                };
+
+
+            _(_x.response.user_data).map(__f_oneAjax).value();
+
+            return;
+         });
+
+         // Authentication
+         async function makeApiCall() {
+           console.log(gapi.client.getToken());
+           const __ret = await verifyIDToken(gapi.client.getToken().id_token, clientId);
+           userInfo = __ret.content;
+
+           __ret.ret || console.log("Failed on the id token verification <%s>", JSON.stringify(__ret));
+           document.cookie = __ret.ret?("idtoken=" + gapi.client.getToken().id_token + ";path=/" ):"idtoken=null;path=/";
+           __ret.ret && rxInpDef.subscribe(_e => console.log("The button is done"));
+           __ret.ret && __rx_renderXls.subscribe(_e => {
+             //console.log("xls render is done");
+             __rx_ajaxData.subscribe(_e => console.log("The ajax is done %d", new Date().getTime()));
+           } );
+         }
+
+         gapi.load('client', initClient);
+
+         function initClient() {
+           gapi.client.init({
+             apiKey: apiKey,
+             discoveryDocs: discoveryDocs,
+             clientId: clientId,
+             scope: scopes
+             // The ux_mode/redirect_uri are used for the redirect feature
+             //ux_mode: 'redirect',
+             //redirect_uri: 'https://d5-docker-dba01.openstack.jp.sbibits.com:8088/test.html'
+           }).then(function () {
+             updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+           });
+         }
+
+         function updateSigninStatus(isSignedIn) {
+           console.log("Calling to here <%s>", isSignedIn);
+           if (!isSignedIn) {
+             gapi.auth2.getAuthInstance().signIn();
+             setTimeout(makeApiCall, 3000);
+           }else{
+             makeApiCall();
+           }
+         }
+
+
+      });

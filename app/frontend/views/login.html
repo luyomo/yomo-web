@@ -1,0 +1,118 @@
+<!--
+  Copyright (c) 2011 Google Inc.
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not
+  use this file except in compliance with the License. You may obtain a copy of
+  the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  License for the specific language governing permissions and limitations under
+  the License.
+  To run this sample, set apiKey to your application's API key and clientId to
+  your application's OAuth 2.0 client ID. They can be generated at:
+    https://console.developers.google.com/apis/credentials?project=_
+  Then, add a JavaScript origin to the client that corresponds to the domain
+  where you will be running the script. Finally, activate the People API at:
+    https://console.developers.google.com/apis/library?project=_
+-->
+<!DOCTYPE html>
+
+<!--
+entry      :   https://jpdla00073.ad.sbibits.com:8087/
+google++   :   https://console.developers.google.com/apis/api/plus.googleapis.com/credentials?project=rt-user-submit
+example    :   https://github.com/google/google-api-javascript-client/blob/master/samples/authSample.html
+Check      :   https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=1/fFBGRNJru1FQd44AzqT3Zg
+-->
+<html>
+  <head>
+    <title>Logging to web application</title>
+    <meta charset='utf-8' />
+  </head>
+  <body>
+    <p>Web Logging</p>
+
+    <!--Add buttons to initiate auth sequence and sign out-->
+    <button id="authorize-button" style="display: none;">Authorize</button>
+    <button id="signout-button" style="display: none;">Sign Out</button>
+
+    <div id="content"></div>
+
+    <script type="text/javascript">
+      // Enter an API key from the Google API Console:
+      //   https://console.developers.google.com/apis/credentials
+      var apiKey = 'AIzaSyB3yU6AL26r8AoU8JGztCoavyNOiSMQGZ8';
+      // Enter the API Discovery Docs that describes the APIs you want to
+      // access. In this example, we are accessing the People API, so we load
+      // Discovery Doc found here: https://developers.google.com/people/api/rest/
+      var discoveryDocs = ["https://people.googleapis.com/$discovery/rest?version=v1"];
+      //var discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+      //var discoveryDocs = ["https://people.googleapis.com/$discovery/rest?version=v1", "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+      // Enter a client ID for a web application from the Google API Console:
+      //   https://console.developers.google.com/apis/credentials?project=_
+      // In your API Console project, add a JavaScript origin that corresponds
+      //   to the domain where you will be running the script.
+      var clientId = '221648707929-g2h5t2apgrljsk3onle86uvdob89q26l.apps.googleusercontent.com';
+      // Enter one or more authorization scopes. Refer to the documentation for
+      // the API or https://developers.google.com/people/v1/how-tos/authorizing
+      // for details.
+      //var scopes = 'profile';
+      var scopes = 'https://www.googleapis.com/auth/plus.me';
+      //var scopes = 'https://www.googleapis.com/auth/drive';
+      //var scopes = 'https://www.googleapis.com/auth/drive';
+      //var scopes = { "oauthScopes" : ['https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/drive'];
+      //var scopes = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/drive';
+      //var scopes = 'https://www.googleapis.com/auth/plus.me';
+      //  https://www.googleapis.com/auth/userinfo.email
+      //  https://www.googleapis.com/auth/userinfo.profile
+      //  https://www.googleapis.com/auth/plus.me
+      var authorizeButton = document.getElementById('authorize-button');
+      var signoutButton = document.getElementById('signout-button');
+      function handleClientLoad() {
+        //gapi.load('client', initClient);
+        gapi.load('client:auth2', initClient);
+      }
+
+      function initClient() {
+        gapi.client.init({
+            apiKey: apiKey,
+            discoveryDocs: discoveryDocs,
+            clientId: clientId,
+            scope: scopes
+            // The ux_mode/redirect_uri are used for the redirect feature
+            //ux_mode: 'redirect',
+            //redirect_uri: 'https://d5-docker-dba01.openstack.jp.sbibits.com:8088/test.html'
+        }).then(function () {
+          // Listen for sign-in state changes.
+          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+          console.log("Print the auth instance <%s>",  gapi.auth2.getAuthInstance() );
+          // Handle the initial sign-in state.
+          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+        });
+      }
+
+      function updateSigninStatus(isSignedIn) {
+        if (isSignedIn) {
+          makeApiCall();
+        } else {
+          gapi.auth2.getAuthInstance().signIn();
+        }
+      }
+      // Load the API and make an API call.  Display the results on the screen.
+      function makeApiCall() {
+        //console.log(gapi.auth2.getAuthInstance().currentUser.get());
+        document.cookie = "idtoken=" + gapi.client.getToken().id_token + ";path=/";
+
+        console.log(gapi.client.getToken());
+        let jwtUsr =  gapi.client.getToken().id_token.split(".");
+        console.log(jwtUsr);
+        console.log(JSON.parse(atob(jwtUsr[1]) ));
+        location.reload();
+      }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js" 
+      onload="this.onload=function(){};handleClientLoad()" 
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+  </body>
+</html>

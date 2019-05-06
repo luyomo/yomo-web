@@ -1,0 +1,97 @@
+90000,/index,90000,jade_template_name,/views/index.jade,\N,f,yomo,2018-04-11 09:36:19.925041,yomo,2018-04-11 09:36:34.16019
+90110,/system/new-page/template-001/yomo-xls-def.ajax,90110,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomo,2018-04-11 09:36:19.925041,yomo,2018-04-11 09:36:34.16019
+90120,/system/new-page/template-001/yomo-inp-def.ajax,90120,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomo,2018-04-11 09:36:19.925041,yomo,2018-04-11 09:36:34.16019
+90130,/system/new-page/template-001/yomo-ajax-master.ajax,90130,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomo,2018-04-11 09:36:19.925041,yomo,2018-04-11 09:36:34.16019
+90121,/system/new-page/template-001/yomo-inp-def.ajax,90120,comp_id,90121,Button id,f,yomo,2018-04-11 09:36:19.925041,yomo,2018-04-11 09:36:34.16019
+90100,/system/new-page/template-001/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomo,2018-04-11 09:36:19.925041,yomo,2018-04-11 09:36:34.16019
+90210,/system/maintenance/excel/yomo-xls-def.ajax,90210,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomo,2018-04-11 12:06:47.63108,yomo,2018-04-11 12:06:47.63108
+90220,/system/maintenance/excel/yomo-inp-def.ajax,90220,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomo,2018-04-11 12:06:47.63108,yomo,2018-04-11 12:06:47.63108
+90230,/system/maintenance/excel/yomo-ajax-master.ajax,90230,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomo,2018-04-11 12:06:47.63108,yomo,2018-04-11 12:06:47.63108
+90221,/system/maintenance/excel/yomo-inp-def.ajax,90220,comp_id,90221,Button id,f,yomo,2018-04-11 12:06:47.63108,yomo,2018-04-11 12:06:47.63108
+90200,/system/maintenance/excel/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomo,2018-04-11 12:06:47.63108,yomo,2018-04-11 12:06:47.63108
+90310,/system/maintenance/ajax-request/yomo-xls-def.ajax,90310,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomo,2018-04-18 10:14:23.404779,yomo,2018-04-18 10:14:23.404779
+90320,/system/maintenance/ajax-request/yomo-inp-def.ajax,90320,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomo,2018-04-18 10:14:23.404779,yomo,2018-04-18 10:14:23.404779
+90330,/system/maintenance/ajax-request/yomo-ajax-master.ajax,90330,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomo,2018-04-18 10:14:23.404779,yomo,2018-04-18 10:14:23.404779
+90321,/system/maintenance/ajax-request/yomo-inp-def.ajax,90320,comp_id,90321,Button id,f,yomo,2018-04-18 10:14:23.404779,yomo,2018-04-18 10:14:23.404779
+90300,/system/maintenance/ajax-request/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomo,2018-04-18 10:14:23.404779,yomo,2018-04-18 10:14:23.404779
+90410,/system/maintenance/include-file/yomo-xls-def.ajax,90410,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomo,2018-04-18 10:16:13.662527,yomo,2018-04-18 10:16:13.662527
+90420,/system/maintenance/include-file/yomo-inp-def.ajax,90420,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomo,2018-04-18 10:16:13.662527,yomo,2018-04-18 10:16:13.662527
+90430,/system/maintenance/include-file/yomo-ajax-master.ajax,90430,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomo,2018-04-18 10:16:13.662527,yomo,2018-04-18 10:16:13.662527
+90421,/system/maintenance/include-file/yomo-inp-def.ajax,90420,comp_id,90421,Button id,f,yomo,2018-04-18 10:16:13.662527,yomo,2018-04-18 10:16:13.662527
+90400,/system/maintenance/include-file/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomo,2018-04-18 10:16:13.662527,yomo,2018-04-18 10:16:13.662527
+90510,/system/User/permission/yomo-xls-def.ajax,90510,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomo,2018-04-18 10:20:01.111306,yomo,2018-04-18 10:20:01.111306
+90520,/system/User/permission/yomo-inp-def.ajax,90520,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomo,2018-04-18 10:20:01.111306,yomo,2018-04-18 10:20:01.111306
+90530,/system/User/permission/yomo-ajax-master.ajax,90530,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomo,2018-04-18 10:20:01.111306,yomo,2018-04-18 10:20:01.111306
+90521,/system/User/permission/yomo-inp-def.ajax,90520,comp_id,90521,Button id,f,yomo,2018-04-18 10:20:01.111306,yomo,2018-04-18 10:20:01.111306
+90500,/system/User/permission/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomo,2018-04-18 10:20:01.111306,yomo,2018-04-18 10:20:01.111306
+90610,/system/User/yomo-xls-def.ajax,90610,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomo,2018-04-18 10:24:08.419089,yomo,2018-04-18 10:24:08.419089
+90620,/system/User/yomo-inp-def.ajax,90620,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomo,2018-04-18 10:24:08.419089,yomo,2018-04-18 10:24:08.419089
+90630,/system/User/yomo-ajax-master.ajax,90630,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomo,2018-04-18 10:24:08.419089,yomo,2018-04-18 10:24:08.419089
+90621,/system/User/yomo-inp-def.ajax,90620,comp_id,90621,Button id,f,yomo,2018-04-18 10:24:08.419089,yomo,2018-04-18 10:24:08.419089
+90600,/system/User/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomo,2018-04-18 10:24:08.419089,yomo,2018-04-18 10:24:08.419089
+90111,/system/new-page/template-001/yomo-xls-def.ajax,90110,cmpt_id,90111,excel id,f,yomo,2018-04-11 09:36:19.925041,yomo,2018-04-11 09:36:34.16019
+90211,/system/maintenance/excel/yomo-xls-def.ajax,90210,cmpt_id,90211,excel id,f,yomo,2018-04-11 12:06:47.63108,yomo,2018-04-11 12:06:47.63108
+90212,/system/maintenance/excel/yomo-xls-def.ajax,90210,cmpt_id,90212,excel id,f,yomo,2018-04-12 03:26:34.811256,yomo,2018-04-12 03:26:34.811256
+90213,/system/maintenance/excel/yomo-xls-def.ajax,90210,cmpt_id,90213,excel id,f,yomo,2018-04-12 03:26:43.691187,yomo,2018-04-12 03:26:43.691187
+90214,/system/maintenance/excel/yomo-xls-def.ajax,90210,cmpt_id,90214,excel id,f,yomo,2018-04-12 03:26:51.175721,yomo,2018-04-12 03:26:51.175721
+90311,/system/maintenance/ajax-request/yomo-xls-def.ajax,90310,cmpt_id,90311,excel id,f,yomo,2018-04-18 10:14:23.404779,yomo,2018-04-18 10:14:23.404779
+90411,/system/maintenance/include-file/yomo-xls-def.ajax,90410,cmpt_id,90411,excel id,f,yomo,2018-04-18 10:16:13.662527,yomo,2018-04-18 10:16:13.662527
+90511,/system/User/permission/yomo-xls-def.ajax,90510,cmpt_id,90511,excel id,f,yomo,2018-04-18 10:20:01.111306,yomo,2018-04-18 10:20:01.111306
+90611,/system/User/yomo-xls-def.ajax,90610,cmpt_id,90611,excel id,f,yomo,2018-04-18 10:24:08.419089,yomo,2018-04-18 10:24:08.419089
+90312,/system/maintenance/ajax-request/yomo-xls-def.ajax,90310,cmpt_id,90312,excel id,f,yomo,2018-04-18 10:54:47.414457,yomo,2018-04-18 10:54:47.414457
+90412,/system/maintenance/include-file/yomo-xls-def.ajax,90410,cmpt_id,90412,excel id,f,yomo,2018-04-18 11:48:18.96689,yomo,2018-04-18 11:48:18.96689
+90710,/system/maintenance/button/yomo-xls-def.ajax,90710,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomo_test,2018-08-28 08:33:54.100265,yomo_test,2018-08-28 08:33:54.100265
+90720,/system/maintenance/button/yomo-inp-def.ajax,90720,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomo_test,2018-08-28 08:33:54.100265,yomo_test,2018-08-28 08:33:54.100265
+90730,/system/maintenance/button/yomo-ajax-master.ajax,90730,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomo_test,2018-08-28 08:33:54.100265,yomo_test,2018-08-28 08:33:54.100265
+90700,/system/maintenance/button/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomo_test,2018-08-28 08:33:54.100265,yomo_test,2018-08-28 08:33:54.100265
+90711,/system/maintenance/button/yomo-xls-def.ajax,90710,cmpt_id,90711,excel id,f,yomo_test,2018-08-28 08:33:54.100265,yomo_test,2018-08-28 08:33:54.100265
+90712,/system/maintenance/button/yomo-xls-def.ajax,90710,cmpt_id,90712,excel id,f,yomo_test,2018-08-28 08:38:04.134824,yomo_test,2018-08-28 08:38:04.134824
+90713,/system/maintenance/button/yomo-xls-def.ajax,90710,cmpt_id,90713,excel id,f,yomo_test,2018-08-28 08:40:49.775978,yomo_test,2018-08-28 08:40:49.775978
+95110,/example/excel/exp-01/yomo-xls-def.ajax,95110,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomo,2018-04-19 13:55:40.469307,yomo,2018-04-19 13:55:40.469307
+95120,/example/excel/exp-01/yomo-inp-def.ajax,95120,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomo,2018-04-19 13:55:40.469307,yomo,2018-04-19 13:55:40.469307
+95130,/example/excel/exp-01/yomo-ajax-master.ajax,95130,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomo,2018-04-19 13:55:40.469307,yomo,2018-04-19 13:55:40.469307
+95121,/example/excel/exp-01/yomo-inp-def.ajax,95120,comp_id,95121,Button id,f,yomo,2018-04-19 13:55:40.469307,yomo,2018-04-19 13:55:40.469307
+95100,/example/excel/exp-01/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomo,2018-04-19 13:55:40.469307,yomo,2018-04-19 13:55:40.469307
+95310,/example/chart/pie/yomo-xls-def.ajax,95310,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomo,2018-04-19 14:20:06.961425,yomo,2018-04-19 14:20:06.961425
+95320,/example/chart/pie/yomo-inp-def.ajax,95320,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomo,2018-04-19 14:20:06.961425,yomo,2018-04-19 14:20:06.961425
+95330,/example/chart/pie/yomo-ajax-master.ajax,95330,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomo,2018-04-19 14:20:06.961425,yomo,2018-04-19 14:20:06.961425
+95321,/example/chart/pie/yomo-inp-def.ajax,95320,comp_id,95321,Button id,f,yomo,2018-04-19 14:20:06.961425,yomo,2018-04-19 14:20:06.961425
+95300,/example/chart/pie/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomo,2018-04-19 14:20:06.961425,yomo,2018-04-19 14:20:06.961425
+95410,/example/chart/candlestick/yomo-xls-def.ajax,95410,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomo,2018-04-19 14:24:15.364612,yomo,2018-04-19 14:24:15.364612
+95420,/example/chart/candlestick/yomo-inp-def.ajax,95420,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomo,2018-04-19 14:24:15.364612,yomo,2018-04-19 14:24:15.364612
+95430,/example/chart/candlestick/yomo-ajax-master.ajax,95430,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomo,2018-04-19 14:24:15.364612,yomo,2018-04-19 14:24:15.364612
+95421,/example/chart/candlestick/yomo-inp-def.ajax,95420,comp_id,95421,Button id,f,yomo,2018-04-19 14:24:15.364612,yomo,2018-04-19 14:24:15.364612
+95400,/example/chart/candlestick/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomo,2018-04-19 14:24:15.364612,yomo,2018-04-19 14:24:15.364612
+95210,/example/chart/bar/yomo-xls-def.ajax,95210,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomo,2018-04-20 01:14:52.860015,yomo,2018-04-20 01:14:52.860015
+95220,/example/chart/bar/yomo-inp-def.ajax,95220,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomo,2018-04-20 01:14:52.860015,yomo,2018-04-20 01:14:52.860015
+95230,/example/chart/bar/yomo-ajax-master.ajax,95230,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomo,2018-04-20 01:14:52.860015,yomo,2018-04-20 01:14:52.860015
+95200,/example/chart/bar/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomo,2018-04-20 01:14:52.860015,yomo,2018-04-20 01:14:52.860015
+95111,/example/excel/exp-01/yomo-xls-def.ajax,95110,cmpt_id,95111,excel id,f,yomo,2018-04-19 13:55:40.469307,yomo,2018-04-19 13:55:40.469307
+95311,/example/chart/pie/yomo-xls-def.ajax,95310,cmpt_id,95311,excel id,f,yomo,2018-04-19 14:20:06.961425,yomo,2018-04-19 14:20:06.961425
+95411,/example/chart/candlestick/yomo-xls-def.ajax,95410,cmpt_id,95411,excel id,f,yomo,2018-04-19 14:24:15.364612,yomo,2018-04-19 14:24:15.364612
+95211,/example/chart/bar/yomo-xls-def.ajax,95210,cmpt_id,95211,excel id,f,yomo,2018-04-20 01:14:52.860015,yomo,2018-04-20 01:14:52.860015
+95212,/example/chart/bar/yomo-xls-def.ajax,95210,cmpt_id,95212,excel id,f,yomo,2018-04-20 01:34:41.05693,yomo,2018-04-20 01:34:41.05693
+95312,/example/chart/pie/yomo-xls-def.ajax,95310,cmpt_id,95312,excel id,f,yomo,2018-04-20 03:14:21.975083,yomo,2018-04-20 03:14:21.975083
+95412,/example/chart/candlestick/yomo-xls-def.ajax,95410,cmpt_id,95412,excel id,f,yomo,2018-04-20 03:44:36.217376,yomo,2018-04-20 03:44:36.217376
+95510,/example/gapi/driver/yomo-xls-def.ajax,95510,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomo_test,2018-08-26 05:33:10.598897,yomo_test,2018-08-26 05:33:10.598897
+95520,/example/gapi/driver/yomo-inp-def.ajax,95520,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomo_test,2018-08-26 05:33:10.598897,yomo_test,2018-08-26 05:33:10.598897
+95530,/example/gapi/driver/yomo-ajax-master.ajax,95530,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomo_test,2018-08-26 05:33:10.598897,yomo_test,2018-08-26 05:33:10.598897
+95521,/example/gapi/driver/yomo-inp-def.ajax,95520,comp_id,95521,Button id,f,yomo_test,2018-08-26 05:33:10.598897,yomo_test,2018-08-26 05:33:10.598897
+95500,/example/gapi/driver/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomo_test,2018-08-26 05:33:10.598897,yomo_test,2018-08-26 05:33:10.598897
+95511,/example/gapi/driver/yomo-xls-def.ajax,95510,cmpt_id,95511,excel id,f,yomo_test,2018-08-26 05:33:10.598897,yomo_test,2018-08-26 05:33:10.598897
+95512,/example/gapi/driver/yomo-xls-def.ajax,95510,cmpt_id,95512,excel id,f,yomo_test,2018-08-26 05:51:20.04807,yomo_test,2018-08-26 05:51:20.04807
+95610,/example/excel/data-crypt/yomo-xls-def.ajax,95610,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomo_test,2018-08-27 04:57:54.862965,yomo_test,2018-08-27 04:57:54.862965
+95620,/example/excel/data-crypt/yomo-inp-def.ajax,95620,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomo_test,2018-08-27 04:57:54.862965,yomo_test,2018-08-27 04:57:54.862965
+95630,/example/excel/data-crypt/yomo-ajax-master.ajax,95630,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomo_test,2018-08-27 04:57:54.862965,yomo_test,2018-08-27 04:57:54.862965
+95600,/example/excel/data-crypt/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomo_test,2018-08-27 04:57:54.862965,yomo_test,2018-08-27 04:57:54.862965
+95611,/example/excel/data-crypt/yomo-xls-def.ajax,95610,cmpt_id,95611,excel id,f,yomo_test,2018-08-27 04:57:54.862965,yomo_test,2018-08-27 04:57:54.862965
+95612,/example/excel/data-crypt/yomo-xls-def.ajax,95610,cmpt_id,95612,excel id,f,yomo_test,2018-08-27 05:00:28.997216,yomo_test,2018-08-27 05:00:28.997216
+95621,/example/excel/data-crypt/yomo-inp-def.ajax,95620,cmpt_id,95621,Manual insertation,f,yomo_test,2018-08-28 11:52:59.668345,yomo_test,2018-08-28 11:52:59.668345
+95622,/example/excel/data-crypt/yomo-inp-def.ajax,95620,cmpt_id,95622,Generated from pushNewXls,f,yomo_test,2018-08-28 11:54:02.598874,yomo_test,2018-08-28 11:54:02.598874
+95700,/example/excel/gapi-chat/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template,f,yomoweb,2019-04-05 00:21:31.153538,yomoweb,2019-04-05 00:21:31.153538
+95710,/example/excel/gapi-chat/yomo-xls-def.ajax,95710,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition,f,yomoweb,2019-04-05 00:21:31.153538,yomoweb,2019-04-05 00:21:31.153538
+95711,/example/excel/gapi-chat/yomo-xls-def.ajax,95710,cmpt_id,95711,excel id,f,yomoweb,2019-04-05 00:21:31.153538,yomoweb,2019-04-05 00:21:31.153538
+95720,/example/excel/gapi-chat/yomo-inp-def.ajax,95720,query_file,/sql/meta/fetch-inp-def.sql,Button definition,f,yomoweb,2019-04-05 00:21:31.153538,yomoweb,2019-04-05 00:21:31.153538
+95730,/example/excel/gapi-chat/yomo-ajax-master.ajax,95730,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request,f,yomoweb,2019-04-05 00:21:31.153538,yomoweb,2019-04-05 00:21:31.153538
+95712,/example/excel/gapi-chat/yomo-xls-def.ajax,95710,cmpt_id,95712,Generated from pushNewXls,f,yomoweb,2019-04-08 04:12:49.872201,yomoweb,2019-04-08 04:12:49.872201
+95112,/example/excel/exp-01/yomo-xls-def.ajax,95110,cmpt_id,95112,Generated from pushNewXls,f,yomokf,2019-04-19 03:38:04.314478,yomokf,2019-04-19 03:38:04.314478

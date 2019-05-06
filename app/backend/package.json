@@ -1,0 +1,29 @@
+{
+  "name": "yomo-rest",
+  "version": "1.0.0",
+  "description": "The node restful service",
+  "main": "index.js",
+  "dependencies": {
+    "node-yaml"      : "^3.0.3",
+    "mysql"          : "^2.15.0",
+    "lodash"         : "^4.17.5",
+    "nodemailer"     : "^4.1.0",
+    "nodemailer-smtp-transport" : "^2.7.4",
+    "bluebird"       : "^3.5.0",
+    "pg-promise"     : "^8.2.2",
+    "redis-sentinel" : "^0.3.3",
+    "koa-bodyparser" : "^4.2.0",
+    "koa2"           : "^2.0.0-alpha.7",
+    "koa-router"     : "^7.4.0",
+    "winston"        : "^2.3.1",
+    "yomo-log"       : "1.0.0",
+    "yomo-gapi-auth" : "1.0.0",
+    "pg-copy-streams": "2.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chou",
+  "license": "ISC"
+}

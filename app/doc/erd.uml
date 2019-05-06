@@ -1,0 +1,262 @@
+@startuml
+class vw_menu{
+id
+--
+pid
+href
+display
+display_jp
+}
+
+class vw_comp_m{
+url
+uid
+--
+seq
+comp_type
+comp_name
+conf
+--
+comment
+}
+
+class vw_page_data_struct{
+id
+parent_node
+--
+child_node
+type
+action_name
+}
+
+class vw_page_params{
+id
+--
+page_name
+data_id
+attr_key
+attr_value
+--
+comment
+}
+
+
+class vw_page_ajax_request{
+id
+--
+page_name
+event
+comp_id
+ajax_url
+--
+disabled_flag
+}
+note right of vw_page_ajax_request
+The table keep all the
+sub ajaxs request from
+one event
+end note
+
+class vw_ajax_master{
+ajax_url
+--
+type
+callback
+parameters
+--
+comment
+disabled_flag
+}
+
+class vw_page_include{
+id
+--
+page_name
+src_file
+type
+--
+comment
+disabled_flag
+}
+
+class vw_queries{
+id
+subid
+--
+comp_name
+query
+format
+parameters
+query_type
+}
+
+class vw_excel_attr_type{
+
+}
+class vw_excel_col_info{
+
+}
+class vw_excel_conf{
+
+}
+class vw_excel_master{
+
+}
+
+class vw_comp_conf{
+group_id
+comp_id
+--
+key
+value
+format_id
+format
+--
+created_by
+created_at
+comment
+}
+
+class usr_master{
+role_name
+role_type
+start_date
+thru_date
+comment
+created_by
+created_date
+}
+
+class usr_priv_master{
+id
+--
+role_name
+object_name
+priv
+--
+start_date
+thru_date
+comment
+created_by
+create_date
+}
+
+class usr_role_rel{
+parent_role
+child_role
+--
+start_date
+thru_date
+created_by
+created_date
+}
+
+
+
+
+
+
+
+class em_group{
+id
+--
+}
+
+class em_group_2_mail{
+group_id
+em_tpl_id
+--
+}
+
+class em_tpl_content{
+
+}
+
+class em_users{
+
+}
+
+class event_master{
+id
+--
+}
+
+
+class state_comp_master{
+id
+--
+}
+
+class state_js_statement{
+status
+--
+}
+
+class state_master{
+state_id
+comp_object
+--
+}
+
+class sys_user_config{
+user_name
+config_type
+config_value
+--
+}
+
+class template_master{
+template_id
+--
+}
+
+class template_params{
+template_id
+item_id
+--
+}
+
+class tpl_vw_excel_col_info{
+template_name
+excel_id
+col_id
+attr_id
+--
+}
+
+class tpl_vw_excel_conf{
+template_name
+excel_id
+attr_id
+--
+}
+class tpl_vw_page_data_struct{
+id
+--
+}
+
+class tpl_vw_page_params{
+template_name
+id
+--
+}
+
+
+vw_page_params --> vw_page_data_struct : (page_name, data_id)
+vw_page_data_struct  --> vw_menu : (parent_node->href)
+vw_page_include --> vw_menu : (page->href)
+vw_queries --> vw_page_params : (id->attr_value<attr_key:query_id>)
+vw_comp_m --> vw_menu :(url->href)
+vw_excel_master --> vw_page_params : (id->attr_value<attr_key:excle_id>+fetch-xls-def.sql)
+vw_excel_conf --> vw_excel_master
+vw_excel_col_info --> vw_excel_master
+vw_excel_conf --> vw_excel_attr_type
+vw_excel_col_info --> vw_excel_attr_type
+vw_comp_conf --> vw_page_params : (id->attr_value<attr_key:other_comp>)
+vw_ajax_master --> vw_page_ajax_request: (ajax_url)
+
+usr_master <--> usr_priv_master: (role_name)
+usr_priv_master --> usr_role_rel: (parent_role/child_role->role_name)
+
+
+@enduml

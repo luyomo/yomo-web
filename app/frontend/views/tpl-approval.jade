@@ -1,0 +1,235 @@
+include frame
+  div(align="left")
+    a#labCond.ui.orange.left.ribbon.huge.label Condition
+    #xlsCondEntry(height="20%")
+    a.ui.orange.left.ribbon.huge.label Approval info
+    #excelApproval(height="20%")
+    a.ui.orange.left.ribbon.huge.label Display
+    #hotHeader(height="60%")
+    #xlsUser(height="60%")
+    .ui.comments(width:"40%")
+      form.ui.reply.form
+        .field
+          textarea#comment
+    div(align="right")
+      button.ui.blue.button(id="data_save") Save data
+      button.ui.blue.button(id="data_approval") Approve
+      button.ui.blue.button(id="data_reject") Reject
+      button.ui.blue.button(id="db_refresh") db refresh
+      button.ui.blue.button(id="db_reset") data reset(only for test)
+      button.ui.blue.button excel export
+      button.ui.blue.button(id="csv_exp") csv export
+    script.
+      var loki = new loki("sandbox.db");
+      lokiCompState   = loki.addCollection('loki_comp_state');
+      lokiPrivInfo    = loki.addCollection('loki_priv_info');
+      lokiJsStatement = loki.addCollection('loki_js_statement');
+      lokiApvMeta     = loki.addCollection('loki_apv_meta');
+      var lokiDB = {
+        "loki_apv_meta"          : loki.addCollection('loki_apv_meta') ,
+        "loki_pe_data"           : loki.addCollection('loki_pe_data') ,
+        "loki_apv_pe_data_snap"  : loki.addCollection('loki_apv_pe_data_snap'),
+        "loki_excel_header"      : loki.addCollection('loki_excel_header')
+      };
+      var excelState = "unchanged";
+      var dataState = "";
+      var xlsUser;
+
+      yellowRenderer = function(instance, td, row, col, prop, value, cellProperties) {
+        Handsontable.renderers.TextRenderer.apply(this, arguments);
+        if(value === "NG"){
+          td.style.backgroundColor = 'yellow';
+        }
+      }
+
+      var price2yieldFunc = function(c, p, T){
+        const value = (parseFloat(c) + (100 - parseFloat(p))/parseFloat(T))/parseFloat(p) * 100000; 
+        return (((Math.sign(value) === 1)?Math.floor(value):Math.ceil(value))/1000);
+      }
+
+      var adjustPrice = function(instance, td, row, oper) {
+        const adjust_base_price = parseFloat(instance.getDataAtRowProp(row, "price_override"));
+        td.innerHTML = adjust_base_price?(oper(adjust_base_price, parseFloat(instance.getDataAtRowProp(row, "pe_price_range")))):"" ;
+      }
+
+      var adjustYield = function(instance, td, row, oper) {
+        const adjust_base_price = parseFloat(instance.getDataAtRowProp(row, "price_override"));
+        const coupon = parseFloat(instance.getDataAtRowProp(row, "coupon"));
+        const price  = adjust_base_price?(oper(adjust_base_price, parseFloat(instance.getDataAtRowProp(row, "pe_price_range")))):"" ;
+        const ttm    = parseFloat(instance.getDataAtRowProp(row, "zanzon"));
+        td.innerHTML = adjust_base_price?price2yieldFunc(coupon, price, ttm):"";
+      }
+
+      adjustUpperPriceRenderer = function(instance, td, row, col, prop, value, cellProperties) {
+        Handsontable.renderers.TextRenderer.apply(this, arguments);
+        adjustPrice(instance, td, row, _.add);
+      }
+
+      adjustLowerPriceRenderer = function(instance, td, row, col, prop, value, cellProperties) {
+        Handsontable.renderers.TextRenderer.apply(this, arguments);
+        adjustPrice(instance, td, row, _.subtract);
+      }
+
+      adjustSyLimitL = function(instance, td, row, col, prop, value, cellProperties) {
+        Handsontable.renderers.TextRenderer.apply(this, arguments);
+        adjustYield(instance, td, row, _.subtract);
+      }
+
+      adjustSyLimitH = function(instance, td, row, col, prop, value, cellProperties) {
+        Handsontable.renderers.TextRenderer.apply(this, arguments);
+        adjustYield(instance, td, row, _.add);
+      }
+ 
+
+      var syncExcelData = function(){
+        $.ajax({url: "data-sync.ajax", type: "GET", contentType: "application/json", success: function(result){
+            updateApvMeta("loki_apv_meta", result["apv_meta_data"]);
+
+            insExcelApproval.loadData((lokiDB["loki_apv_meta"].data?lokiDB["loki_apv_meta"].data:{}));
+
+            updateApvMeta("loki_excel_header"    , result["excel_header"]);
+            updateApvMeta("loki_pe_data"         , result["pe_data"]);
+            updateApvMeta("loki_apv_pe_data_snap", result["apv_pe_data_snap"]);
+
+            xlsUser.loadData(fetchDataSnap({"left" : [{"commit_id" : fetchLatestCommitId()}]}));
+
+            dataState = result.latest_status;
+            console.log("The status ois " + JSON.stringify(result));
+            getState(setCompState, result.latest_status, excelState, lokiPrivInfo, lokiCompState);
+
+            document.getElementById("comment").value = "";
+        }});
+      };
+
+      document.addEventListener("DOMContentLoaded", function() {
+        var xlsUserElement = document.getElementById('xlsUser');
+        var xlsUserSettings = {
+          columns: !{JSON.stringify(excel_data_conf.excel_conf_format.map(function(ele){return ele["value"];})).replace(/\"(\w+?)\":/g, '$1:').replace(/\"object\((.*?)\)\"/g, '$1')},
+          !{JSON.stringify(excel_data_conf.excel_conf[0]["value"].join(",")).replace(/^"/,'').replace(/"$/, '')},
+          !{JSON.stringify(excel_data_conf.excel_special_header[0].special_header).replace(/"/g, '').replace(/(^{)|(}$)/g, '')}
+        };
+        xlsUser = new Handsontable(xlsUserElement, xlsUserSettings);
+
+        var excelApprovalContainer = document.getElementById('excelApproval');
+        var excelApprovalSettings = {
+          columns: !{JSON.stringify(excel_apv_conf.excel_conf_format.map(function(ele){return ele["value"];})).replace(/\"(\w+?)\":/g, '$1:').replace(/\"object\((.*?)\)\"/g, '$1')},
+          !{JSON.stringify(excel_apv_conf.excel_conf[0]["value"].join(",")).replace(/^"/,'').replace(/"$/, '')},
+          colHeaders: [ '!{excel_apv_conf.excel_conf_header.map(function(ele){return ele["value"];}).join("','") + "'" }]
+        };
+        insExcelApproval = new Handsontable(excelApprovalContainer, excelApprovalSettings);
+
+        var xlsCondEntryElement = document.querySelector('#xlsCondEntry');
+        var xlsCondEntryElementContainer = xlsCondEntryElement.parentNode;
+        var xlsCondEntrySettings = {
+          columns: !{JSON.stringify(excel_cond_conf.excel_conf_format.map(function(ele){return ele["value"];})).replace(/\"(\w+?)\":/g, '$1:').replace(/\"object\((.*?)\)\"/g, '$1')},
+          !{JSON.stringify(excel_cond_conf.excel_conf[0]["value"].join(",")).replace(/^"/,'').replace(/"$/, '')},
+          colHeaders: [ '!{excel_cond_conf.excel_conf_header.map(function(ele){return ele["value"];}).join("','") + "'" }]
+        };
+        var xlsCondEntry = new Handsontable(xlsCondEntryElement, xlsCondEntrySettings);
+
+        $("#csv_exp").click(function(){
+          var csv_string = handsontable2csv.download(xlsUser, "filename.csv");
+        });
+
+        xlsCondEntry.addHook('afterChange', function(changes){
+          if(changes === null) return;
+          var where = _(xlsCondEntry.getDataAtRow(0).map((_ele, _idx) =>{
+            return (_ele === null)?null:{[xlsCondEntry.colToProp(_idx)] : _ele};
+          })).compact().value();
+
+          where = convParam(where);
+          var tempData = diffCommit(where);
+          tempData = filterData(where.data, tempData);
+          xlsUser.loadData(tempData);
+        });
+
+        xlsUser.addHook('afterChange', function(changes){
+            if (changes === null) return;
+            getState(setCompState, dataState, "changed", lokiPrivInfo, lokiCompState);
+            var td = xlsUser.getCell(changes[0][0], xlsUser.propToCol(changes[0][1]));
+            var metaData = xlsUser.getCellMeta(changes[0][0],xlsUser.propToCol(changes[0][1]));
+
+            if(metaData["original-value"] === undefined) {
+              xlsUser.setCellMeta(changes[0][0],xlsUser.propToCol(changes[0][1]), "original-value", changes[0][2]);
+            } else if (metaData["original-value"] === xlsUser.getDataAtRowProp(changes[0][0], changes[0][1])){
+              xlsUser.removeCellMeta(changes[0][0],xlsUser.propToCol(changes[0][1]), "original-value");
+            }
+        });
+
+        $.ajax({url: "js-statement-sync.ajax", type: "GET", contentType: "application/json" , success: function(result){
+            lokiJsStatement.insert(result["js-statement"]); }});
+
+        $.ajax({url: "permission-info-sync.ajax", type: "GET", contentType: "application/json", success: function(result){
+            lokiPrivInfo.insert(result["priv-info"]); }});
+
+        $.ajax({url: "comp-state-sync.ajax", type: "GET", contentType: "application/json" , success: function(result){
+            lokiCompState.insert(result); }});
+
+        syncExcelData();
+
+        $("#db_refresh").click(function(){
+            if (!confirm('Are you sure you want to clear the change?')) return;
+            syncExcelData();
+        });
+
+        $("#data_save").click(function(){
+          var jsonData = [];
+          _.map(_.range(xlsUser.countRows()), function(RowNum){
+            if(_.max(_.map(_.range(xlsUser.countCols()), function(ColNum) {
+              return ((xlsUser.getCellMeta(RowNum, ColNum)["original-value"] === undefined)?0:1);
+            })) === 1) {
+              jsonData.push(xlsUser.getSourceDataAtRow(RowNum));
+            }});
+
+          if(jsonData.length === 0){
+            alert("Warning:No data was changed.");
+            return;
+          }else{
+            alert("Changed data " + JSON.stringify(jsonData));
+          }
+
+          $.ajax({url: "save_data", type: "POST", data: JSON.stringify({"ajax-req-data":jsonData, "commit_comment": document.getElementById("comment").value, "action_name": "new"}), contentType: "application/json", success: function(result){
+            syncExcelData();
+            alert("Updated sucessfully!");
+          }}); });
+
+        $("#data_approval").click(function(){
+          var jsonData = [];
+          _.map(_.range(xlsUser.countRows()), function(RowNum){
+            if(_.max(_.map(_.range(xlsUser.countCols()), function(ColNum) {
+              return ((xlsUser.getCellMeta(RowNum, ColNum)["original-value"] === undefined)?0:1);
+            })) === 1) {
+              jsonData.push(xlsUser.getSourceDataAtRow(RowNum));
+            }
+          });
+
+          if(jsonData.length === 0){
+            alert("Warning:No data was changed.");
+          }else{
+            alert("Could not approve after any data was changed.");
+            return;
+          }
+
+          $.ajax({url: "data_approval", type: "POST", data: JSON.stringify({"ajax-req-data":jsonData, "commit_comment": document.getElementById("comment").value, "action_name": "approved"}), contentType: "application/json"
+            , success: function(result){
+            syncExcelData();
+            alert("Updated sucessfully!");
+          }}); 
+        });
+
+        $("#data_reject").click(function(){
+          $.ajax({url: "data_reject", type: "POST", data: JSON.stringify({"commit_comment": document.getElementById("comment").value, "action_name": "reject"}), contentType: "application/json"
+            , success: function(result){
+              syncExcelData();
+              alert("Updated sucessfully!");
+              }});
+            });
+
+        $("#db_reset").click(function(){
+          $.ajax({url: "db_reset.ajax", type: "POST", data: JSON.stringify({"action_name": "db_reset"}), contentType: "application/json"
+            , success: function(result){
+              syncExcelData();
+              alert("Updated sucessfully!");
+              }});
+            });
+      });

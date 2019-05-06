@@ -1,0 +1,1 @@
+alter table yomo_template.tpl_vw_page_data_struct add PRIMARY KEY (template_name, id);

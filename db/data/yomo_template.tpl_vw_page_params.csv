@@ -1,0 +1,5 @@
+/system/new-page/template-001,10,{page_name}/yomo-xls-def.ajax,10,query_file,/sql/meta/fetch-xls-def.sql,query to fetch xls ddefinition
+/system/new-page/template-001,20,{page_name}/yomo-inp-def.ajax,20,query_file,/sql/meta/fetch-inp-def.sql,Button definition
+/system/new-page/template-001,30,{page_name}/yomo-ajax-master.ajax,30,query_file,/sql/meta/fetch-ajax-url-patten02.sql,Fetch ajax request
+/system/new-page/template-001,0,{page_name}/main.html,90102,jade_template_name,/views/tpl-xls-std.jade,template
+/system/new-page/template-001,11,{page_name}/yomo-xls-def.ajax,10,cmpt_id,11,excel id

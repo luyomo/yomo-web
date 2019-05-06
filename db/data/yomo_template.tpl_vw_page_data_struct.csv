@@ -1,0 +1,4 @@
+/system/new-page/template-001,10,{page_name}/yomo-xls-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,xls definition
+/system/new-page/template-001,20,{page_name}/yomo-inp-def.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,button definition
+/system/new-page/template-001,30,{page_name}/yomo-ajax-master.ajax,ajax-res,leaf,fetch_pg_data_from_file,f,page load ajax definition
+/system/new-page/template-001,0,{page_name}/main.html,template-03,template,\N,f,template name

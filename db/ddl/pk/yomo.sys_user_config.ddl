@@ -1,0 +1,1 @@
+alter table yomo.sys_user_config add PRIMARY KEY (user_name, config_type, config_value);

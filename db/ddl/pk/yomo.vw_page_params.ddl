@@ -1,0 +1,1 @@
+alter table yomo.vw_page_params add PRIMARY KEY (id);

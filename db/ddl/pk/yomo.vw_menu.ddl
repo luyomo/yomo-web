@@ -1,0 +1,1 @@
+alter table yomo.vw_menu add PRIMARY KEY (id, pid);

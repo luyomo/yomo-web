@@ -1,0 +1,1 @@
+alter table yomo.event_master add PRIMARY KEY (id);

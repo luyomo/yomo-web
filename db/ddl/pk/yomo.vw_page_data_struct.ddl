@@ -1,0 +1,1 @@
+alter table yomo.vw_page_data_struct add PRIMARY KEY (id);

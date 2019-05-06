@@ -1,0 +1,85 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "treed",
+        "scope": null,
+        "escapedName": "treed",
+        "name": "treed",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/home/AD/chunhua.zhang/.working/home"
+    ]
+  ],
+  "_from": "treed@latest",
+  "_id": "treed@0.1.0",
+  "_inCache": true,
+  "_location": "/treed",
+  "_npmUser": {
+    "name": "jabapyth",
+    "email": "jared@jaredforsyth.com"
+  },
+  "_npmVersion": "1.3.14",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "treed",
+    "scope": null,
+    "escapedName": "treed",
+    "name": "treed",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/treed/-/treed-0.1.0.tgz",
+  "_shasum": "cd56d0d340a1b5f7cb2c868e071fa09dc9547b1c",
+  "_shrinkwrap": null,
+  "_spec": "treed",
+  "_where": "/home/AD/chunhua.zhang/.working/home",
+  "author": {
+    "name": "Jared Forsyth",
+    "email": "jared@jaredforsyth.com"
+  },
+  "bugs": {
+    "url": "https://github.com/jaredly/listless/issues"
+  },
+  "dependencies": {},
+  "description": "The main component of an editor for hierarchical content. ",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "cd56d0d340a1b5f7cb2c868e071fa09dc9547b1c",
+    "tarball": "https://registry.npmjs.org/treed/-/treed-0.1.0.tgz"
+  },
+  "homepage": "https://github.com/jaredly/listless",
+  "keywords": [
+    "list",
+    "todo",
+    "editor",
+    "d3",
+    "tree"
+  ],
+  "license": "Apache v2",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "jabapyth",
+      "email": "jared@jaredforsyth.com"
+    }
+  ],
+  "name": "treed",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jaredly/listless.git"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "version": "0.1.0"
+}

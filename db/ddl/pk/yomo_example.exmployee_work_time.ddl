@@ -1,0 +1,1 @@
+alter table yomo_example.exmployee_work_time add PRIMARY KEY (employee_name);

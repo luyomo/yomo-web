@@ -1,0 +1,1 @@
+alter table yomo.vw_page_include add PRIMARY KEY (page_name, id);

@@ -1,0 +1,64 @@
+mixin parseObject(obj)
+    div
+        each val, key in obj
+            if (typeof val === 'string')
+                span #{val}
+            else if (typeof val === 'object')
+                mixin parseObject(val)
+#toc.ui.vertical.inverted.sidebar.menu.left
+  .item
+    a.ui.logo.icon.image(href="#{root_path}/index")
+    a(href="#{root_path}/index")
+      b#menuTitleDisp #{menu_title}
+    a.button(onclick='gapiLogout(\'#{api_key}\', \'#{client_id}\', \'#{scope}\', ["#{discovery_docs}"]);' style="float:right") Logout
+    br
+    br
+    a(style="float:right") #{user_name}
+  .container(style='height: inherit; width: inherit;')
+    .row
+    .well(style='width:280px; padding: 8px 0;overflow-y: auto; overflow-x: auto; height: 100%; background-color: #3d70b2; color: white;')
+
+script.
+   $(document).ready(function () {$('label.tree-toggler').click(function () {$(this).parent().children('ul.tree').toggle(300);});});
+
+   $(document).ready(function(){$('label.tree-toggler').parent().children('ul.tree').toggle(200);});
+   
+   menu_list = !{JSON.stringify(menus)};
+   root_path = !{JSON.stringify(root_path)};
+
+   function recr_display(id) {
+      var return_var = `<ul class="nav nav-list tree">`;
+      for (var k=0; k< menu_list.length; k++) {
+         if (menu_list[k]["pid"] == id) {
+            if(menu_list[k]["has_children"] == false) {
+               return_var += `<li><a href="` + root_path + menu_list[k]['href'] + `" style='color: white'>` + menu_list[k]['display'] + `</a></li>`;
+            }
+            else {
+               return_var += `<li>`
+               return_var += `<label class="tree-toggler nav-header" >` + menu_list[k]["display"] +`</label>`;
+               return_var += recr_display(menu_list[k]["id"]);
+               return_var += `</li>`;
+            }
+         }
+      }
+      return_var += `</ul>`;
+      return return_var;
+   }
+
+   var html_text = `<ul class="nav nav-list">`;
+   for (var i= 0; i < menu_list.length; i++) {
+       if (menu_list[i]["pid"] == 0) {
+          html_text += `<li><label class="tree-toggler nav-header">` + menu_list[i]["display"] + `</label>`;
+          if (menu_list[i]["has_children"] == true)
+             html_text += recr_display(menu_list[i]["id"]);
+          html_text += `<li class="divider"></li>`;
+       }
+   }
+   $(".well").append(html_text);
+
+.ui.black.big.launch.right.attached.fixed.button(onClick="$(toc).sidebar('toggle')")
+  i.content.icon
+  span#menuDisp.text Menu
+.pusher
+  div(align="right")
+

@@ -1,0 +1,598 @@
+* Start new service
+** Startup one postgres database
+*** Database preparation
+#+BEGIN_SRC org
+$docker run -d -p 5432:5432 postgres:latest
+$docker exec -it 92ea5175b657 psql -U postgres
+postgres=# create user yomoweb password 'yomoweb';
+postgres=# alter user yomoweb set search_path=yomo, yomo_template, yomo_example;
+postgres=# create database testweb04;
+postgres=# grant all on database testweb04 to yomoweb;
+GRANT
+$ docker exec -it 92ea5175b657 psql testweb -U yomoweb
+psql (11.1 (Debian 11.1-1.pgdg90+1))
+Type "help" for help.
+#+END_SRC
+*** Run script to initialize the database
+ Initialize the database for the new page
+ #+BEGIN_SRC
+ docker run -e PG_HOST=localhost -e PG_PORT=5432 -e PG_DATABASE=testweb04 -e PG_USER=yomoweb -e PG_PASSWORD=yomoweb -e WEB_HEADER=web-demo yomo-web:latest init
+ #+END_SRC
+
+ #+attr_latex: align=|c|c|c|
+ | ENV variable | value     | comment                                       |
+ |--------------+-----------+-----------------------------------------------|
+ | PG_HOST      | localhost | Database hostname                             |
+ | PG_DATABASE  | testweb04 | Database name                                 |
+ | PG_PORT      | 5432      | Database port                                 |
+ | PG_USER      | yomoweb   | DB user                                       |
+ | PG_PASSWORD  | yomoweb   | DB password                                   |
+ | WEB_HEADER   | web-demo  | The url name space. Used in the nginx as well |
+
+*** Add admin user
+Add the first user to the new environment. Replace the *testUser* to your user name for first login
+#+BEGIN_SRC
+postgres=> insert into yomo.usr_master(role_name, role_type, start_date, thru_date
+        => , comment, created_by, created_date )
+        => values('testUser', 'u', '2018-01-01', null, null, 'init', current_timestamp);
+
+
+postgres=> insert into yomo.usr_role_rel(parent_role, child_role, start_date, thru_date, created_by, created_date )
+        => values('role-sys-rw', 'testUser', '2019-03-20', null, 'init', '2019-03-20')
+
+#+END_SRC
+
+** Start the web service(Optional)
+*** google jwt preparation
+If the backend could access the external web to fetch below files for authentication, please skip this step.
+Otherwise have to manually download the below files for the authentication and mount/update it into the contianer.
+[https://accounts.google.com/.well-known/openid-configuration] is the fixed one from google while 
+[https://www.googleapis.com/oauth2/v3/certs] is from openid-configuration's jwks_uri.
+#+BEGIN_SRC
+$wget https://accounts.google.com/.well-known/openid-configuration
+$more openid-configuration
+{
+ "issuer": "https://accounts.google.com",
+ "authorization_endpoint": "https://accounts.google.com/o/oauth2/v2/auth",
+ "token_endpoint": "https://oauth2.googleapis.com/token",
+ "userinfo_endpoint": "https://openidconnect.googleapis.com/v1/userinfo",
+ "revocation_endpoint": "https://oauth2.googleapis.com/revoke",
+ "jwks_uri": "https://www.googleapis.com/oauth2/v3/certs",
+...
+}
+$wget https://www.googleapis.com/oauth2/v3/certs
+$more cert
+{
+  "keys": [
+    {
+      "kid": "a4313e7fd1e9e2a4ded3b292d2a7f4e519574308",
+      "e": "AQAB",
+      "kty": "RSA",
+      "alg": "RS256",
+      "n": "lO3_QoRd_D8UHAjFcdg0_8GOiLyWo4Viiy8cDLNGf8T1eQlqqhPYZmvGOPhyILWZ9FInOXT9AzH5KPfeOnMEzy4TqfGLtdcAlufqALe_qus
+mq7SSNIVfSw5iPZjzXk3BXjzoFNZLfqsoqheGzek-sJV1Ti5JQQ2hRPSZQhba9xVn6G8Uxr5ugVhHQ25P6HL4acjhuvpSPEFn7tivEIhWZEL35CeqHelf-4
+8WA4PLzRVvfFMS-hW6erjX7uxT9mj8uT7zGl41_zBd9lMn2CQeP3aLDeQFoFaLaX2NZctRASErz6H9MIXQngM1piKnc84hmify-ZAsPpBcxw7heFpYRw",
+      "use": "sig"
+    },
+    {
+      "kid": "6f6781ba71199a658e760aa5aa93e5fc3dc752b5",
+      "e": "AQAB",
+      "kty": "RSA",
+      "alg": "RS256",
+      "n": "1J287_drOWg9YJohe9TO7T0_l3EFkXOOWECkX5U-7ELhGFcfSnug-X7jnk4UJe2IyzlxZYSzsshUgTAvXSkLQCbkNT9gqigOmE7X70UAKaa
+q3IryR_yM92kpmBeH0zoNRFr-0f9vATrt3E2q9oKyKT16NEyzWqurk9w5cgdEB27OF389ftFK8H-BOtyB1gGziLvXVY4UTVfGOPe8VKTt2TfNWrdc40gt9L
+8iW4hCDzMlYCZQ-61dLhj_muIYXDXDfMqH1YK_JaCzAowzzuw6zCWLd9cUEAncotEbEsQUGqhof7KIsuX96ajGZKOWKBkvzBOUzr8EaOU4YGAyOvyVJw",
+      "use": "sig"
+    }
+  ]
+}
+$mv openid-configuration /etc/yomo-web/openid-configuration
+$mv cert /etc/yomo-web/jwks_files
+#+END_SRC
+*** Edit the docker-composer.yaml
+#+BEGIN_SRC
+version: '3.1'
+services:
+  redis:
+    image: "redis"
+    networks:
+      yomo-web:
+  web:
+    image: "yomo-web"
+    depends_on:
+      - redis
+    environment:
+      - PG_HOST=localhost                                       #DB connection info
+      - PG_PORT=5432
+      - PG_DATABASE=testweb04
+      - PG_USER=yomoweb
+      - PG_PASSWORD=yomoweb
+      - WEB_HEADER=web-demo                                     #The web's name space
+      - CLIENT_ID=221648707929-g2h5t2apgrljsk3onle86uvdob89q26l.apps.googleusercontent.com   # Google authentication client_id
+      - API_KEY=AIzaSyB3yU6AL26r8AoU8JGztCoavyNOiSMQGZ8                                      # Google authentication's API KEY
+      - http_proxy=http://proxy:8080                                          #Used for google verification
+      - https_proxy=http://proxy:8080                                         #Used for google verification
+    ports:
+      - 8084:8083
+      - 8086:8084
+#    volumes:                                                                     #Local google verification
+#      - /etc/yomo-web/openid-configuration:/app/etc/certs/openid-configuration
+#      - /etc/yomo-web/jwks_files:/app/etc/certs/jwks_files
+    networks:
+      yomo-web:
+
+networks:
+  yomo-web:
+#+END_SRC
+
+*** Start the container
+#+BEGIN_SRC
+$docker-compose up -d
+#+END_SRC
+** Set the proxy in the nginx
+*** frontend proxy
+#+BEGIN_SRC
+location /web-demo/ {                                            #web-demo => Your web-header
+    proxy_pass http://hostname:8084;                             #The front hostname and port
+    proxy_http_version 1.1;
+    proxy_redirect     off;
+    proxy_set_header   Host $host;
+    proxy_set_header   ROOT_PATH /web-demo;                      #web-demo => Your web-header
+    proxy_set_header   username $remote_user;
+    proxy_set_header   DB_HOST xxx.xxx.xxx.xxx;                  #DB connection info
+    proxy_set_header   DB_PORT 5432;
+    proxy_set_header   DB_NAME testweb;
+    proxy_set_header   DB_USER yomoweb;
+    proxy_set_header   DB_PASS yomoweb;
+    proxy_set_header   MENU_TITLE "Demo Menu";                   #Title for the web page
+
+    proxy_set_header   DISCOVERY_DOCS https://www.googleapis.com/discovery/v1/apis/drive/v3/rest;
+    proxy_set_header   SCOPE https://www.googleapis.com/auth/drive;
+
+    rewrite /web-demo(.*) $1 break;
+}
+
+location /web-demo-static/ {
+    proxy_pass http://hostname:8084;
+    proxy_http_version 1.1;
+    proxy_redirect     off;
+    proxy_set_header   Host $host;
+    proxy_set_header   ROOT_PATH /web-demo-static;
+    proxy_set_header   username $remote_user;
+
+    rewrite /web-demo-static(.*) $1 break;
+}
+#+END_SRC
+*** backend proxy
+#+BEGIN_SRC
+location /web-demo-bg/ {                                             #web-demo => Your web-header
+    proxy_pass http://hostname:8086;                                 #The backend service's hostname and port
+    proxy_http_version 1.1;
+    proxy_redirect     off;
+    proxy_set_header   Host $host;
+    proxy_set_header   ROOT_PATH /web-demo-bg;                       #web-demo-bg => web-header-bg
+    proxy_set_header   username $remote_user;
+
+    rewrite /web-demo-bg(.*) $1 break;                               #web-demo-bg => web0header-bg
+}
+#+END_SRC
+*** Included into nginx.conf
+#+BEGIN_SRC
+   #demo
+    include /etc/nginx/nginx.d/dev-demo.conf;
+    include /etc/nginx/nginx.d/web-demo-bg.conf; 
+#+END_SRC
+* Confirmation
+** excel
+*** Common excel
+  Simple show one template handsontable demo \\
+  [[doc/images/example-xls.png]]
+*** Google Driver to share
+  - Rename the Folder to your preference which will be created on the google driver
+    [[doc/images/example-xls-gapi-driver01.png]]
+  - Check the file created in your google driver
+    [[doc/images/example-xls-gapi-driver02.png]]
+  - Verify the contents same to input from excel
+    [[doc/images/example-xls-gapi-driver03.png]]
+*** Data crypt
+  - No any data in the original state \\
+    [[doc/images/example-xls-encrypt01.png]]
+  - Input the data to be encrypted into the [Raw Content], click [Encrypt Data] button
+    [[doc/images/example-xls-encrypt02.png]]
+  - Click the [Decrypt Data] button to decrypt the raw data
+    [[doc/images/example-xls-encrypt03.png]]
+*** Google chat
+   - depend on the [yomo-chat] setup
+** CHART
+*** Bar
+  [[doc/images/example-chart-bar.png]]
+*** Pie
+  [[doc/images/example-chart-pie.png]]
+*** CandleStick
+  [[doc/images/example-chart-candlestick.png]]
+** System
+*** New Page
+  - New Page
+    Goto  https://wsjp16007:18443/web-demo/system/new-page/template-001/main.html
+   #+attr_latex: align=|c|c|c|c|c|c|
+   |  ID | PID | Title     | Title_JP  | Href                              | Has Children |
+   |-----+-----+-----------+-----------+-----------------------------------+--------------|
+   |   1 |   0 | Test      | Test      | Test                              | check        |
+   |   2 |   1 | SubTest   | SubTest   | /Test/SubTest                     | Check        |
+   | 100 |   2 | Test Page | Test Page | /Test/SubTest/test-page/main.html | non-check    |
+  - Permission
+    #+BEGIN_SRC
+insert into yomo.usr_priv_master values (5, 'role-sys-rw', '/Test', 'rwx', '2018-01-01', null, null, 'init', current_timestamp);
+insert into yomo.usr_priv_master values (6, 'role-sys-ro', '/Test', 'rwx', '2018-01-01', null, null, 'init', current_timestamp);
+    #+END_SRC
+* Internal Logical
+** Approval process
+  + rsa key
+    #+BEGIN_SRC
+$openssl genrsa -out myprivate.pem 1024
+$openssl rsa -in key.pem -out key.pub -pubout
+$openssl dgst -sha1 -sign key.pem -out sha1.sign myfile.txt
+$openssl dgst -sha1 -verify key.pub -signature sha1.sign myfile.txt
+    #+END_SRC
+  + Frontend
+    - Add ajax request to the table 
+      #+BEGIN_SRC
+   pg=>select * from vw_page_ajax_request where id = 90233;
+  -[ RECORD 1 ]-+------------------------------------------------
+  id            | 90233
+  page_name     | /system/maintenance/excel/yomo-ajax-master.ajax        <= Page to add
+  event         | load
+  comp_id       | 
+  ajax_url      | /yomo-kf-bg/api/page-permission.rest                   <= ajax request to get the permission
+  disabled_flag | f
+  type          | GET
+  parameters    | 
+  callback      | onPagePermission                                       <= Call back function to set the cookie
+  created_by    | yomo
+  created_at    | 2019-04-22 23:51:57.257722
+  updated_by    | yomo
+  updated_at    | 2019-04-22 23:51:57.257722
+      #+END_SRC
+    - Insert one row for permission control
+      #+BEGIN_SRC
+   pg=>select * from yomo.usr_priv_master where id = 101;
+    -[ RECORD 1 ]------------------------------------------------
+    id          | 101
+    role_name   | role-sys-rw                                             <= Role to the user
+    object_name | /system/maintenance/excel/yomo-ajax-master.ajax         <= Ajax request 
+    object_type | ajax
+    priv        | r
+    start_date  | 2018-01-01 00:00:00
+    thru_date   |
+    comment     |
+    created_by  | init
+    create_date | 2019-04-22 23:28:16.887705
+      #+END_SRC
+  + Backend
+    - sign verification
+    #+BEGIN_SRC
+function verifySign(_data){
+  const __jsonBuff = JSON.parse(Buffer.from(_data, 'base64'));
+  const __pub = fs.readFileSync('/app/etc/sign.pub.pem');
+  const __verifier = crypto.createVerify('RSA-SHA256');
+  __verifier.update(JSON.stringify(__jsonBuff.payload));
+
+  const __pubBuf = Buffer.from(__pub, 'utf-8');
+  const __sigBuf = Buffer.from(__jsonBuff.siga , 'base64');
+  return __verifier.verify(__pubBuf, __sigBuf);
+}
+    #+END_SRC
+    - User access data
+      #+BEGIN_SRC
+      if(_ctx.cookies.get('userAccess') !== undefined){
+        if(verifySign(_ctx.cookies.get('userAccess')) !== true ){
+          _$log.info("Invalid access from remote");
+        }else{
+          const __jsonBuff = JSON.parse(Buffer.from(_ctx.cookies.get('userAccess'), 'base64'));
+          _$log.debug("User access data is <%s>", JSON.stringify(__jsonBuff));
+        }
+      }
+
+{ payload:
+   [ { role_name: 'chunhua.zhang',
+       object_name: '/system/maintenance/excel/yomo-ajax-master.ajax',
+       priv: 'r' } ],
+  siga:
+   'LNQXhmYNKG........jxUBztSl1JM=' }
+      #+END_SRC
+
+* DB Data extraction
+#+BEGIN_SRC
+$docker exec -it d1e8eb112dfe bash
+
+docker$cd /opt/db
+docker$./extractDB.sh
+#+END_SRC
+* Changes
+** 0.0.8
+*** DONE Move the db connection info from config file to nginx
+    CLOSED: [2019-03-27 Wed 07:55]
+    - State "DONE"       from              [2019-03-27 Wed 07:55]
+*** DONE Replace the AD authentication to google AUTH2
+    CLOSED: [2019-03-27 Wed 07:55]
+    - State "DONE"       from              [2019-03-27 Wed 07:55]
+*** DONE Add one button to menu to logout from the login user
+    CLOSED: [2019-03-27 Wed 12:39]
+    - State "DONE"       from              [2019-03-27 Wed 12:39]
+*** DONE Replace the title [memo] to variable
+    CLOSED: [2019-03-27 Wed 12:56]
+    - State "DONE"       from              [2019-03-27 Wed 12:56]
+*** DONE Replace the JNX backoffice subject
+    CLOSED: [2019-03-27 Wed 12:51]
+    - State "DONE"       from              [2019-03-27 Wed 12:51]
+*** DONE Fix the subject link
+    CLOSED: [2019-03-27 Wed 12:43]
+    - State "DONE"       from              [2019-03-27 Wed 12:43]
+*** DONE Replace the login html to jade with variables
+    CLOSED: [2019-03-27 Wed 15:59]
+    - State "DONE"       from              [2019-03-27 Wed 15:59]
+*** DONE Export the below tables to csv files
+    CLOSED: [2019-04-09 Tue 10:17]
+    - State "DONE"       from              [2019-04-09 Tue 10:17]
+   - vw_page_include
+*** DONE Add auth check to the backend
+    CLOSED: [2019-03-30 Sat 14:45]
+    - State "DONE"       from              [2019-03-30 Sat 14:45]
+*** DONE Make the google auth to modules
+    CLOSED: [2019-03-29 Fri 10:33]
+    - State "DONE"       from              [2019-03-29 Fri 10:33]
+*** DONE Add google keys for offline check
+    CLOSED: [2019-03-29 Fri 08:01]
+    - State "DONE"       from              [2019-03-29 Fri 08:01]
+*** DONE Move the node_modules to /opt/lib/frontend,backend/node_modules
+    CLOSED: [2019-04-01 Mon 08:03]
+
+    - State "DONE"       from              [2019-04-01 Mon 08:03]
+      
+*** DONE Move ddl and data initialization into the image
+    CLOSED: [2019-04-09 Tue 14:57]
+    - State "DONE"       from "STARTED"    [2019-04-09 Tue 14:57]
+*** DONE Add one example to publish to hangout user from bot chat
+    CLOSED: [2019-04-10 Wed 14:20]
+    - State "DONE"       from              [2019-04-10 Wed 14:20]
+*** DONE Add one hide function to the label
+    CLOSED: [2019-04-12 Fri 16:20]
+    - State "DONE"       from              [2019-04-12 Fri 16:20]
+*** DONE Version Up
+    CLOSED: [2019-04-09 Tue 15:06]
+    - State "DONE"       from              [2019-04-09 Tue 15:06]
+**** DONE Include files addition
+     CLOSED: [2019-04-05 Fri 08:47]
+     - State "DONE"       from              [2019-04-05 Fri 08:47]
+35	template-03	https://apis.google.com/js/api.js	javascript	false	
+36	template-03	/web-static/idtoken/v1/browserify-verifyIDToken.js	javascript	false	
+37	template-03	common.js	javascript	false
+
+insert into yomo.vw_page_include values(35, 'template-03', 'https://apis.google.com/js/api.js', 'javascript', false, 'Upgrade manual', 'chou', current_timestamp, 'chou', current_timestamp);
+insert into yomo.vw_page_include values(36, 'template-03', '/web-static/idtoken/v1/browserify-verifyIDToken.js', 'javascript', false, 'Upgrade manual', 'chou', current_timestamp, 'chou', current_timestamp);
+insert into yomo.vw_page_include values(37, 'template-03', 'common.js', 'javascript', false, 'Upgrade manual', 'chou', current_timestamp, 'chou', current_timestamp);
+*** Handsontable's sequence change 
+  - Column addition(sequence)
+  - View rebuild
+    #+BEGIN_SRC
+SELECT dependent_ns.nspname as dependent_schema ,
+dependent_view.relname as dependent_view , source_ns.nspname as
+source_schema , source_table.relname as source_table ,
+pg_attribute.attname as column_name FROM pg_depend JOIN pg_rewrite ON
+pg_depend.objid = pg_rewrite.oid JOIN pg_class as dependent_view ON
+pg_rewrite.ev_class = dependent_view.oid JOIN pg_class as source_table
+ON pg_depend.refobjid = source_table.oid JOIN pg_attribute ON
+pg_depend.refobjid = pg_attribute.attrelid AND pg_depend.refobjsubid =
+pg_attribute.attnum JOIN pg_namespace dependent_ns ON dependent_ns.oid
+= dependent_view.relnamespace JOIN pg_namespace source_ns ON
+source_ns.oid = source_table.relnamespace WHERE source_ns.nspname =
+'yomo' AND source_table.relname = 'vw_cmpt_master' ORDER BY 1,2;
+    #+END_SRC
+    | yomo | v_cmpt_btn_master | yomo | vw_cmpt_master |
+    | yomo | v_cmpt_master     | yomo | vw_cmpt_master |
+    | yomo | v_menu_list       | yomo | vw_cmpt_master |
+    | yomo | vu_cmpt_master    | yomo | vw_cmpt_master |
+#+BEGIN_SRC
+pg=>alter table yomo.vw_cmpt_master rename to vw_cmpt_master_2rm;
+pg=> create table yomo.vw_cmpt_master(cmpt_id int primary key, cmpt_uid varchar(128), cmpt_name varchar(128)
+  -> , comp_type varchar(32) default 'excel', gui_seq int, comment varchar(256)
+  -> , disabled_flag boolean default false, created_by varchar(32) default current_user
+  -> , created_at timestamp default current_timestamp
+  =>, updated_by varchar(32) default current_user, updated_at timestamp default current_timestamp);
+pg=> drop view yomo.vu_cmpt_master;
+pg=> create view yomo.vu_cmpt_master as
+  -> SELECT  cmpt_id, cmpt_uid, cmpt_name, comp_type, gui_seq, comment 
+  -> from vw_cmpt_master where disabled_flag = false AND cmpt_id < 90000 ORDER BY cmpt_id;
+pg=> drop view yomo.v_cmpt_master;
+pg=>create view yomo.v_cmpt_master as
+  -> SELECT  cmpt_id, cmpt_uid, cmpt_name, comp_type, gui_seq, comment 
+  -> from vw_cmpt_master where comp_type in ('excel', 'chart') ORDER BY cmpt_id;
+pg=> drop view yomo.v_cmpt_btn_master;
+pg=> create view yomo.v_cmpt_btn_master as
+pg-> SELECT vw_cmpt_master.cmpt_id,
+pg->     vw_cmpt_master.cmpt_uid,
+pg->     vw_cmpt_master.cmpt_name,
+pg->     vw_cmpt_master.comp_type,
+pg->     vw_cmpt_master.gui_seq,
+pg->     vw_cmpt_master.comment,
+pg->     vw_cmpt_master.disabled_flag
+pg->    FROM vw_cmpt_master
+pg->   WHERE vw_cmpt_master.comp_type::text = ANY (ARRAY['button'::text, 'input'::text])
+pg->   ORDER BY vw_cmpt_master.cmpt_id;
+
+pg=> drop view yomo.v_menu_list;
+DROP VIEW
+pg=> create view yomo.v_menu_list as
+pg->  SELECT t2.id,
+pg->     t2.pid,
+pg->     t2.display,
+pg->     t2.display_jp,
+pg->     t2.href,
+pg->     array_agg(t4.cmpt_id) AS cmpt_id_list
+pg->    FROM vw_page_data_struct t1
+pg->      JOIN vw_menu t2 ON t1.parent_node::text ~ replace(t2.href::text, 'main.html'::text, ''::text)
+pg->      JOIN vw_page_params t3 ON t1.id = t3.data_id
+pg->      JOIN vw_cmpt_master t4 ON t3.attr_value::integer = t4.cmpt_id AND t3.attr_key::text = 'cmpt_id'::text
+pg->   GROUP BY t2.id, t2.pid, t2.display, t2.display_jp, t2.href;
+
+pg=>insert into vw_cmpt_master select cmpt_id, cmpt_uid, cmpt_name, comp_type
+  -> , cmpt_id, comment, disabled_flag, created_by, created_at, updated_by, updated_at 
+  -> from vw_cmpt_master_2rm ;
+
+pg=>update vw_cmpt_col_conf set col_id = 6 where cmpt_id = 90212 and col_id = 5;
+pg=>insert into vw_cmpt_col_conf select cmpt_id, 5, attr_id, name, value, disabled_flag
+  -> , created_by, current_timestamp, updated_by, current_timestamp from vw_cmpt_col_conf 
+  -> where (cmpt_id, col_id) = (90212, 1) and attr_id <> 8;
+pg=>update vw_cmpt_col_conf set value = 'GUI SEQ' where (cmpt_id, col_id) = (90212, 5) and attr_id in (1,4);
+pg=>update vw_cmpt_col_conf set value = 'gui_seq' where (cmpt_id, col_id,attr_id) = (90212, 5, 3);
+#+END_SRC
+  - fetch-xls-def.sql   Change
+*** Handsontable's menu sequence
+  - Dependency
+    #+BEGIN_SRC
+SELECT distinct dependent_ns.nspname as dependent_schema ,
+dependent_view.relname as dependent_view , source_ns.nspname as
+source_schema , source_table.relname as source_table FROM pg_depend JOIN pg_rewrite ON
+pg_depend.objid = pg_rewrite.oid JOIN pg_class as dependent_view ON
+pg_rewrite.ev_class = dependent_view.oid JOIN pg_class as source_table
+ON pg_depend.refobjid = source_table.oid JOIN pg_attribute ON
+pg_depend.refobjid = pg_attribute.attrelid AND pg_depend.refobjsubid =
+pg_attribute.attnum JOIN pg_namespace dependent_ns ON dependent_ns.oid
+= dependent_view.relnamespace JOIN pg_namespace source_ns ON
+source_ns.oid = source_table.relnamespace WHERE source_ns.nspname =
+'yomo' AND source_table.relname = 'vw_menu' ORDER BY 1,2;
+
+ dependent_schema | dependent_view | source_schema | source_table 
+------------------+----------------+---------------+--------------
+ yomo             | v_menu         | yomo          | vw_menu
+ yomo             | v_menu_list    | yomo          | vw_menu
+ yomo             | vu_menu        | yomo          | vw_menu
+    #+END_SRC
+  - Change layout from db
+    #+BEGIN_SRC
+pg=> alter table vw_menu rename to vw_menu_2rm;
+pg=> create table yomo.vw_menu (
+ id            integer        not null,
+ pid           integer                      not null,
+ display       character varying(128)       default NULL::character varying,
+ href          character varying(128)       default NULL::character varying,
+ display_jp    character varying(128)     ,
+ gui_seq       int default 1     ,
+ has_children  boolean                      default true,
+ disable_flag  boolean                      default false,
+ created_by    character varying(32)        default CURRENT_USER,
+ created_at    timestamp without time zone  default CURRENT_TIMESTAMP,
+ updated_by    character varying(32)        default CURRENT_USER,
+ update_at     timestamp without time zone  default CURRENT_TIMESTAMP
+, primary key(id, pid)
+ );
+pg=>drop view v_menu;
+pg=>create view yomo.v_menu as
+ SELECT vw_menu.id,
+    vw_menu.pid,
+    vw_menu.display,
+    vw_menu.href,
+    vw_menu.display_jp,
+    vw_menu.gui_seq,
+    vw_menu.has_children
+   FROM vw_menu
+  WHERE vw_menu.disable_flag = false
+  ORDER BY vw_menu.pid, vw_menu.id;
+
+pg=> drop view yomo.vu_menu;
+pg=> create view yomo.vu_menu as
+ SELECT vw_menu.id,
+    vw_menu.pid,
+    vw_menu.display,
+    vw_menu.href,
+    vw_menu.display_jp,
+    vw_menu.gui_seq,
+    vw_menu.has_children
+   FROM vw_menu
+  WHERE vw_menu.disable_flag = false AND vw_menu.id < 90000
+  ORDER BY vw_menuq.id;
+
+pg=> drop view yomo.v_menu_list;
+pg=> create view yomo.v_menu_list as
+ SELECT t2.id,
+    t2.pid,
+    t2.display,
+    t2.display_jp,
+    t2.href,
+    t2.gui_seq,
+    array_agg(t4.cmpt_id) AS cmpt_id_list
+   FROM vw_page_data_struct t1
+     JOIN vw_menu t2 ON t1.parent_node::text ~ replace(t2.href::text, 'main.html'::text, ''::text)
+     JOIN vw_page_params t3 ON t1.id = t3.data_id
+     JOIN vw_cmpt_master t4 ON t3.attr_value::integer = t4.cmpt_id AND t3.attr_key::text = 'cmpt_id'::text
+  GROUP BY t2.id, t2.pid, t2.display, t2.display_jp, t2.href, t2.gui_seq
+pg=> insert into yomo.vw_menu select  id, pid, display, href, display_jp, id, has_children, disable_flag
+    , created_by, created_at, updated_by, update_at from yomo.vw_menu_2rm;
+pg=> drop table yomo.vw_menu_2rm;
+pg=> insert into v_cmpt_col_conf select cmpt_id, 7, attr_id, name, value, disabled_flag 
+  -> from v_cmpt_col_conf where (cmpt_id, col_id) = (90111, 2);
+pg=> update v_cmpt_col_conf set value = 'GUI Seq' where (cmpt_id, col_id) = (90111, 7) and  attr_id in (1,4);
+pg=> update v_cmpt_col_conf set value = 'gui_seq' where (cmpt_id, col_id) = (90111, 7) and  attr_id = 3;
+    #+END_SRC
+
+*** Add Permission control for excel and button
+*** Add approval process using private key siganiture
+  - DB change
+  #+BEGIN_SRC
+    pg=> insert into yomo.vw_page_ajax_request values (90233
+      ->, '/system/maintenance/excel/yomo-ajax-master.ajax', 'load', null
+      ->, '/yomo-kf-bg/api/page-permission.rest', false, 'GET', null, 'onPagePermission'
+      ->, 'yomo', current_timestamp, 'yomo', current_timestamp);
+  #+END_SRC
+*** Remove the db info from yomo backend
+
+** 0.0.9
+*** move the frontend and backend to pm2
+*** Convert the handsontable to react
+*** Add data push from backend to frontend : KAFKA -> backend -> frontend handsontable
+*** Add the button below the labels
+*** Encrypt the password in the nginx config file
+*** How to add the authorization to the backend service
+*** Add the feature to delete one menu
+*** Add term.js example to the frame
+*** Add one example using pjson to bypass CORS
+*** yomo-gapi-auth. Return specific error code when the certificate expired(Repeated error)
+*** yomo-gapi-auth. Cache the crentials into some place to improve the performance
+*** Accessiable to the direct web page even though without permission
+*** Fix the bug of Disabled Flag when adding new columns [https://wsjp16007:18443/web-dev/system/maintenance/excel/main.
+*** Start the react modules into the frame
+*** Rewrite the google share file
+*** User permission web page
+*** New page -> Href automatic generation without manual input
+*** Add data export feature from the image/container
+*** Add one button to export one page's data
+
+* QA
+** Dropdown not invisible in the handsontable
+  - Need to remove the height for the handsontable
+  - Javascript
+    #+BEGIN_SRC
+.handsontableInputHolder
+ {
+   z-index:110;
+ }
+ .handsontable.autocompleteEditor
+ {
+   border: 1px solid #AAAAAA;
+   box-shadow: 10px 10px 15px #AAAAAA;
+   background-color: white;
+   min-width: 200px;
+ }
+ .handsontable.autocompleteEditor.handsontable
+ {
+   padding-right: 0px;
+ }
+ .handsontable.listbox .ht_master table
+ {
+   border: none;
+ }
+ .autocompleteEditor .wtHolder
+ {
+   min-width: 200px;
+ }
+    #+END_SRC

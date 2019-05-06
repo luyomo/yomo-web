@@ -1,0 +1,20 @@
+90001,0,System,/system,System,90001,t,f,yomo,2018-04-11 05:47:10.933767,yomo,2018-04-11 05:47:10.933767
+90002,90001,New Page,/system/new-page,New Page,90002,t,f,yomo,2018-04-11 05:47:10.933767,yomo,2018-04-11 05:47:10.933767
+90100,90002,Template 001(Excel),/system/new-page/template-001/main.html,Template 001(Excel),90100,f,f,yomo,2018-04-11 05:47:10.933767,yomo,2018-04-11 05:47:10.933767
+90003,90001,Page Maintenance,/system/maintenance,Page Maintenance,90003,t,f,yomo,2018-04-11 12:04:28.589347,yomo,2018-04-11 12:04:28.589347
+90200,90003,Excel,/system/maintenance/excel/main.html,Excel,90200,f,f,yomo,2018-04-11 12:06:47.601153,yomo,2018-04-11 12:06:47.601153
+90300,90003,Ajax Request,/system/maintenance/ajax-request/main.html,Ajax Request,90300,f,f,yomo,2018-04-18 10:14:23.393213,yomo,2018-04-18 10:14:23.393213
+90400,90003,Include File,/system/maintenance/include-file/main.html,Include File,90400,f,f,yomo,2018-04-18 10:16:13.653062,yomo,2018-04-18 10:16:13.653062
+90500,90004,User Permission,/system/User/permission/main.html,User Permission,90500,f,f,yomo,2018-04-18 10:20:01.095277,yomo,2018-04-18 10:20:01.095277
+90004,90001,User,/system/User,User,90004,t,f,yomo,2018-04-18 10:26:00.546068,yomo,2018-04-18 10:26:00.546068
+90700,90003,Button,/system/maintenance/button/main.html,Button,90700,f,f,yomo_test,2018-08-28 08:33:50.093994,yomo_test,2018-08-28 08:33:50.093994
+95001,0,Example,/example,Example,95001,t,f,yomo,2018-04-19 13:31:42.423117,yomo,2018-04-19 13:31:42.423117
+95100,95002,Example 01,/example/excel/exp-01/main.html,Example 01,95100,f,f,yomo,2018-04-19 13:55:40.461024,yomo,2018-04-19 13:55:40.461024
+95300,95003,Pie,/example/chart/pie/main.html,Pie,95300,f,f,yomo,2018-04-19 14:20:06.951701,yomo,2018-04-19 14:20:06.951701
+95400,95003,CandleStick,/example/chart/candlestick/main.html,CandleStick,95400,f,f,yomo,2018-04-19 14:24:15.354585,yomo,2018-04-19 14:24:15.354585
+95200,95003,Bar,/example/chart/bar/main.html,Bar,95200,f,f,yomo,2018-04-20 01:14:52.840848,yomo,2018-04-20 01:14:52.840848
+95500,95002,Google Driver,/example/gapi/driver/main.html,Google Driver,95500,f,f,yomo_test,2018-08-26 05:33:06.586271,yomo_test,2018-08-26 05:33:06.586271
+95600,95002,Data Crypt,/example/excel/data-crypt/main.html,Data Crypt,95600,f,f,yomo_test,2018-08-27 04:57:50.856136,yomo_test,2018-08-27 04:57:50.856136
+95003,95001,Chart,/example/chart,Chart,2,t,f,yomo,2018-04-19 14:12:26.433358,yomo,2018-04-19 14:12:26.433358
+95002,95001,Excel,/example/excel,Excel,1,t,f,yomo,2018-04-19 13:51:48.149905,yomo,2018-04-19 13:51:48.149905
+95700,95002,Google Chat,/example/excel/gapi-chat/main.html,Google Chat,1,f,f,yomoweb,2019-04-05 00:21:31.14519,yomoweb,2019-04-05 00:21:31.14519

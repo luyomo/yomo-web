@@ -1,0 +1,1 @@
+alter table yomo_example.gapi_chat_golden_price add PRIMARY KEY (year);

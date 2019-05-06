@@ -1,0 +1,11 @@
+maxRows,int
+startRows,int
+height,int
+width,int
+rowHeaders,boolean
+readOnly,boolean
+autoWrapRow,boolean
+Autowraprow,boolean
+search,boolean
+columnSorting,boolean
+formulas,boolean

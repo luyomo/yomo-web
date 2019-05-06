@@ -1,0 +1,1 @@
+alter table yomo_template.tpl_vw_cmpt_col_conf add PRIMARY KEY (template_name, cmpt_id, col_id, attr_id);

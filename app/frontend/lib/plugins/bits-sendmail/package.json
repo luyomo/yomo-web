@@ -1,0 +1,15 @@
+{
+  "name": "bits-sendmail",
+  "version": "1.0.0",
+  "description": "Send email according to the db config",
+  "main": "sendmail.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "nodemailer"  : "^4.1.0",
+    "nodemailer-smtp-transport" : "^2.7.4"
+  },
+  "author": "Chou",
+  "license": "ISC"
+}

@@ -1,0 +1,33 @@
+version: '3.1'
+services:
+  redis:
+    image: "redis"
+    networks:
+      yomo-web:
+  web:
+    image: "yomo-web"
+    depends_on:
+      - redis
+    environment:
+      - PG_HOST=d5-docker-dba01.openstack.jp.sbibits.com                # config db connection
+      - PG_PORT=5432
+      - PG_DATABASE=testweb
+      - PG_USER=yomoweb
+      - PG_PASSWORD=yomoweb
+      - WEB_HEADER=web-dev                                              # Url name space
+      - CLIENT_ID=221648707929-g2h5t2apgrljsk3onle86uvdob89q26l.apps.googleusercontent.com  # The client_id from google api application
+      - API_KEY=AIzaSyB3yU6AL26r8AoU8JGztCoavyNOiSMQGZ8                                     # The api key from google api application
+    ports:
+      - 8084:8083
+      - 8086:8084
+    volumes:
+      - ${local directory}/yomo-web/app/etc/certs/openid-configuration:/app/etc/certs/openid-configuration  # Used for checking jwt token from google
+      - ${local_directory}/yomo-web/app/etc/certs/jwks_files:/app/etc/certs/jwks_files                      # Used for checking jwt token from google
+    networks:
+      yomo-web:
+
+networks:
+  yomo-web:
+
+#docker run -it --entrypoint=bash --network=yomo-web_yomo-web -v /home/chunhua.zhang/01-docker-repo/yomo-web/app/frontend:/opt/source/frontend -v /home/chunhua.zhang/01-docker-repo/yomo-web/app/backend:/opt/source/backend -p 8084:8083 -p 8086:8084 -e PG_HOST=10.137.91.60 -e PG_PORT=5432 -e PG_DATABASE=testweb -e PG_USER=yomoweb -e PG_PASSWORD=yomoweb -e WEB_HEADER=web-dev yomo-web:latest
+#

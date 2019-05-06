@@ -1,0 +1,5 @@
+1,role-sys-ro,/system,menu,r,2018-01-01 00:00:00,\N,\N,init,2019-03-20 01:34:53.685481
+3,role-sys-rw,/system,menu,rwx,2018-01-01 00:00:00,\N,\N,init,2019-03-20 01:47:38.823515
+2,role-sys-ro,/example,menu,r,2018-01-01 00:00:00,\N,\N,init,2019-03-20 01:35:11.339617
+4,role-sys-rw,/example,menu,rwx,2018-01-01 00:00:00,\N,\N,init,2019-03-20 01:47:47.238901
+101,role-sys-rw,/system/maintenance/excel/yomo-ajax-master.ajax,ajax,r,2018-01-01 00:00:00,\N,\N,init,2019-04-22 23:28:16.887705

@@ -1,0 +1,40 @@
+{
+  "name": "node_web",
+  "version": "1.0.0",
+  "description": "* Prerequsite ** postgres database preparation -- V9.6 ** nodejs V7.9 ** redis   - Change the ip address for redis   - Change the ip address for redis-sentinel   - Change the conf dis for redis -> redis-sentinel",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "koa-static"         : "^4.0.2",
+    "koa-views"          : "^5.2.0",
+    "koa-convert"        : "^1.2.0",
+    "cookie"             : "^0.3.1",
+    "lodash"             : "^4.17.5",
+    "koa2"               : "^2.0.0-alpha.7",
+    "node-yaml"          : "3.0.3",
+    "koa-socket"         : "4.4.0",
+    "koa-bodyparser"     : "^4.2.0",
+    "winston"            : "^2.3.1",
+    "pg-promise"         : "^8.2.2",
+    "jade"               : "^1.11.0",
+    "fs-readfile-promise": "^3.0.0",
+    "redis-sentinel"     : "0.3.3",
+    "lokijs"             : "^1.4.3",
+    "pikaday"            : "^1.5.1",
+    "sql.js"             : "^0.4.0",
+    "redis"              : "*",
+    "yomo-handsontable"  : "*",
+    "yomo-gapi-auth"     : "*"
+  },
+  "devDependencies": {
+    "eslint-config-google": "^0.9.1",
+    "webpack-cli": "^2.0.14"
+  }
+}

@@ -1,0 +1,1 @@
+alter table yomo.general_conf add PRIMARY KEY (category, id);

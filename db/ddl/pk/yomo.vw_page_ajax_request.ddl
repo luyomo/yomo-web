@@ -1,0 +1,1 @@
+alter table yomo.vw_page_ajax_request add PRIMARY KEY (id);

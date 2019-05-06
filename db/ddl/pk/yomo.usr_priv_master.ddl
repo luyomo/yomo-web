@@ -1,0 +1,1 @@
+alter table yomo.usr_priv_master add PRIMARY KEY (id);

@@ -1,0 +1,7 @@
+smtp_host:
+  host: smtp.gmail.com
+  port: 465
+  secure: true
+  auth:
+    user: chunhua.zhang@sbibits.com
+    pass: ihgchecuhgxnjnyn

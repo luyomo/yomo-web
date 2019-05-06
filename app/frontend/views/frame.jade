@@ -1,0 +1,27 @@
+doctype html
+
+html
+  head
+    title #{menu_title}
+    - if (typeof(include_src) !== 'undefined'){
+      - include_src.forEach(function(file){
+        - if (file['type'] === 'javascript'){
+          - if(file['src_file'].charAt(0) === "/" || file['src_file'].substr(0,7) === "http://" || file['src_file'].substr(0,8) === "https://")
+            script(src="#{file['src_file']}")
+          - else
+            script(src="#{root_path}/#{file['src_file']}")
+        - }else{
+          - if(file['src_file'].charAt(0) === "/" || file['src_file'].substr(0,7) === "http://" || file['src_file'].substr(0,8) === "https://")
+            link(rel="stylesheet", href="#{file['src_file']}")
+          - else
+            link(rel="stylesheet", href="#{root_path}/#{file['src_file']}")
+        - }
+      - })
+    - }
+
+    script.
+      $(function() {$('.ui.dropdown').dropdown();});
+
+      
+  body
+    include menu-items

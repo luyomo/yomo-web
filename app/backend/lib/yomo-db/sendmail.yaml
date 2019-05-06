@@ -1,0 +1,7 @@
+smtp_host:
+  host: ${smtp_server}
+  port: ${mail_port}
+  secure: true
+  auth:
+    user: ${from_mail}
+    pass: ${mail_passwd}

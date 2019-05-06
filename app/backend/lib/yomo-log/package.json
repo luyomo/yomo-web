@@ -1,0 +1,77 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "yomo-log",
+        "scope": null,
+        "escapedName": "yomo-log",
+        "name": "yomo-log",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/home/zhang/01-docker/images-dev/yomo-web/app/backend"
+    ]
+  ],
+  "_from": "yomo-log@latest",
+  "_id": "yomo-log@1.0.0",
+  "_inCache": true,
+  "_location": "/yomo-log",
+  "_nodeVersion": "8.7.0",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/yomo-log_1.0.0_1526457987954_0.5119635434187444"
+  },
+  "_npmUser": {
+    "name": "emax.chou",
+    "email": "syunka.tyo@gmail.com"
+  },
+  "_npmVersion": "3.9.3",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "yomo-log",
+    "scope": null,
+    "escapedName": "yomo-log",
+    "name": "yomo-log",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/yomo-log/-/yomo-log-1.0.0.tgz",
+  "_shasum": "c59a39948619488031458a8adbc5eb4ed9c28dd4",
+  "_shrinkwrap": null,
+  "_spec": "yomo-log",
+  "_where": "/home/zhang/01-docker/images-dev/yomo-web/app/backend",
+  "author": {
+    "name": "emax.chou"
+  },
+  "dependencies": {},
+  "description": "The module for the log output",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "c59a39948619488031458a8adbc5eb4ed9c28dd4",
+    "tarball": "https://registry.npmjs.org/yomo-log/-/yomo-log-1.0.0.tgz",
+    "fileCount": 2,
+    "unpackedSize": 2159,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJa++aECRA9TVsSAnZWagAARcYQAIpZZOAebDvJc95NiZer\nTatiDKyhrqaPJxQY6QE+giqPyR251F0gdDYmjaXGmiCwAvuTRmIXR/MnYOWo\nQDn/m+YGOe8oPMkItzp1EScvuA9YeKVhRMANaEt6jc2vAOYGnQ5xJIJ9AHqQ\n3nWEbW80PS0YQ03/rwOrflPzS1ziBA4FVsxlsvbsQVsdgO0cSF7IMSDLThwG\nHowPsWlgpvu0qd1QsalG2/Gc6l+icP8UFYYBKlQGWgSqT7u9H2wL51czAHCa\nbTpxOeh2YfNMChXceAiMvwPHYtbj9mxsD6VzCw5xXx22jB7ivXYu4P5lqvGa\noYAL4+WCu4LU0xoZ6cjGVNwrFWBj+0ChcbUA+gEeKzD5YaO03Hm2oBcqDoDS\nAEYjTNkwkMi4r2RPLgdCpY+ErPtEQnNhxrJVGm7ikCYJELrnuuGgsXLkkuhS\nun06OJ0odizLYs8xecU2z6fUhf+HgVutKQzihHDU70r1EBlW0nFFgbu+vd6g\n7DDTdzpK72v0layD/e7ZZP5oalYJMRLGpb7kun0HtEzSNG5itJhAURblzYSD\nr39H22cWSgC0L/U8A7Z2oNVocEW+8beGNAQ+YvKegEolBp24i7C/5UCEjzPb\nRxZMUD59pgcZFhZiheLcvqrmcZBGRYfKlivt7y//e+/A7Tpa6qVj7hNmwXak\nDPPe\r\n=P2dt\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "license": "ISC",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "emax.chou",
+      "email": "syunka.tyo@gmail.com"
+    }
+  ],
+  "name": "yomo-log",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0"
+}
