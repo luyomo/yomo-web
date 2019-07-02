@@ -7,26 +7,3 @@ log_mode: debug
 client_id: ${CLIENT_ID}
 api_key:   ${API_KEY}
 cert_dir: /app/etc/certs
-config-db:
-  host     : ${PG_HOST}
-  port     : ${PG_PORT}
-  database : ${PG_DATABASE}
-  user     : ${PG_USER}
-  password : ${PG_PASSWORD}
-redis:
-  single:
-    - ${REDIS_PORT}
-    - ${REDIS_HOST}
-#  sentinel:
-#    -
-#      - 
-#        host : redis-sentinel1 
-#        port : 26379
-#      - 
-#        host : redis-sentinel2
-#        port : 26380
-#      - 
-#        host : redis-sentinel3
-#        port : 26381
-#    - redismaster
-#    - auth_pass : passwd

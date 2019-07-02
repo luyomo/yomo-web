@@ -1,59 +1,82 @@
 var promise = require("bluebird");
-var pgp = require("pg-promise")({promiseLib: promise}),
-    _    = require("lodash")
-    util = require("util");
+var pgp     = require("pg-promise"),
+    _    = require("lodash"),
+    util = require("util"),
+    crypto     = require('crypto');
 
 const __$log = global._$log?global._$log:console;
 
 //var insDB = pgp({"database": "yomo", "host": "postgres", "port": "5432", "user": "yomo", "password": "yomo"});
-var $insDB; 
+var $insDBs ={}; 
 
+/*
+ * Initialize the db instance and add it into the connection pool using md5 of the parameter
+ * _args --> $insDBs[md5] 
+ *       ==> string       : md5
+ */
 function initConn(_args){
-  __$log.info("_args: <%s>", JSON.stringify(_args));
-  $insDB = pgp(_args);
-  __$log.debug("The connection is <%s>", JSON.stringify($insDB));
+  // args ====> md5
+  const __connMD5 = crypto.createHash('md5').update(JSON.stringify(_args) ).digest("hex");
+    // Connection addition
+    if(!_.has($insDBs, __connMD5 )){
+      $insDBs[__connMD5] = new pgp()(_args);
+      __$log.debug("The connection is successfully. conn info: <%s>", JSON.stringify(_args));
+    }else {
+      __$log.debug("The connection is done before. conn info: <%s>", JSON.stringify(_args));
+    }
+    return __connMD5;
 }
 
+/*
+ * Loop all the db connections and close it.
+ */
 function closeConn(){
-  $insDB && $insDB.end;
+  for (const [key, __insDB] in $insDBs){ __insDB.end; }
 }
 
-function getTableData(_args) {
+/*
+ * Description: Select table data 
+ * (_connMD5, args) ==> promise
+ */
+function getTableData(_connMD5, _args) {
   __$log.info("The value is <%s>", util.inspect(_args["schema_name"]));
-  __$log.debug("The connection is <%s>", JSON.stringify($insDB));
+  __$log.debug("The connection is <%s>", JSON.stringify($insDBs[_connMD5]));
 
-  if(typeof($insDB) === "undefined"){__$log.error("Invalid db connection"); return null;}
+  if(!_.has($insDBs, _connMD5)){__$log.error("Invalid db connection <%s>", _connMD5); return null;}
 
   if(!_.has(_args, "where")) _.assignIn(_args, {"where": ""});
 
   return new promise((_resl, _rej) => {
-    $insDB.any("select * from ${schema_name:name}.${table_name:name} ${where:raw}", _args)
+    $insDBs[_connMD5].any("select * from ${schema_name:name}.${table_name:name} ${where:raw}", _args)
          .then(_row => {__$log.debug("The data is <%s>", util.inspect(_row));  ; return _row;})
          .then(_row => _resl(_row))
          .catch(_err => { __$log.error("DB error: <%s>", util.inspect(_err)) ; _rej(_err);});
   });
 };
 
-function getOneQueryData(_query, _args) {
+function getOneQueryData(_connMD5, _query, _args) {
+  if(!_.has($insDBs, _connMD5)){__$log.error("Invalid db connection <%s>", _connMD5); return null;}
   return new promise((_resl, _rej) => {
-    $insDB.one(_query, _args)
+    $insDBs[_connMD5].one(_query, _args)
          .then(_row => _resl(_row))
          .catch(_err => _rej(_err));
   });
 };
 
-function getAnyQueryData(_query, _args) {
+function getAnyQueryData(_connMD5, _query, _args) {
+  if(!_.has($insDBs, _connMD5)){__$log.error("Invalid db connection <%s>", _connMD5); return null;}
   return new promise((_resl, _rej) => {
-    $insDB.any(_query, _args)
+    $insDBs[_connMD5].any(_query, _args)
          .then(_row => _resl(_row))
          .catch(_err => _rej(_err));
   });
 };
 
-async function  getTableKey(_tableSchema, _tableName) {
+async function  getTableKey(_connMD5, _tableSchema, _tableName) {
+  if(!_.has($insDBs, _connMD5)){__$log.error("Invalid db connection <%s>", _connMD5); return null;}
   //- * Get the dependent
   const __dependent = await new promise((_resl, _rej) => {
-   $insDB.any(" \
+   $insDBs[_connMD5].any(" \
       SELECT distinct dependent_ns.nspname as dependent_schema \
            , dependent_view.relname as dependent_view  \
            , source_ns.nspname as source_schema \
@@ -82,7 +105,7 @@ async function  getTableKey(_tableSchema, _tableName) {
   }
   //- ** Multiple reference
   return new promise((_resl, _rej) => {
-   $insDB.any(" \
+   $insDBs[_connMD5].any(" \
     select kc.column_name                             \
       from information_schema.table_constraints tc,   \
            information_schema.key_column_usage kc     \
@@ -97,46 +120,51 @@ async function  getTableKey(_tableSchema, _tableName) {
   });
 }
 
-function getTableCols(_tableSchema, _tableName){
+function getTableCols(_connMD5, _tableSchema, _tableName){
+  if(!_.has($insDBs, _connMD5)){__$log.error("Invalid db connection <%s>", _connMD5); return null;}
   return new promise((_resl, _rej) => {
-  $insDB.any("select column_name from information_schema.columns where table_schema = ${tableSchema} and table_name = ${tableName} order by ordinal_position",  {tableSchema: _tableSchema, tableName: _tableName})
+  $insDBs[_connMD5].any("select column_name from information_schema.columns where table_schema = ${tableSchema} and table_name = ${tableName} order by ordinal_position",  {tableSchema: _tableSchema, tableName: _tableName})
        .then(_row => _resl(_row))
        .catch(_err => _rej(_err));
   });
 }
 
-function getTableColsType(_tableSchema, _tableName){
+function getTableColsType(_connMD5, _tableSchema, _tableName){
+  if(!_.has($insDBs, _connMD5)){__$log.error("Invalid db connection <%s>", _connMD5); return null;}
   return new promise((_resl, _rej) => {
-  $insDB.any("select column_name, data_type from information_schema.columns where table_schema = ${tableSchema} and table_name = ${tableName} order by ordinal_position",  {tableSchema: _tableSchema, tableName: _tableName})
+  $insDBs[_connMD5].any("select column_name, data_type from information_schema.columns where table_schema = ${tableSchema} and table_name = ${tableName} order by ordinal_position",  {tableSchema: _tableSchema, tableName: _tableName})
        .then(_row => _resl(_row))
        .catch(_err => _rej(_err));
   });
 }
 
-async function insertTableData(_args){
-  const __cols = await getTableCols(_args.schema_name, _args.table_name);
+async function insertTableData(_connMD5, _args){
+  if(!_.has($insDBs, _connMD5)){__$log.error("Invalid db connection <%s>", _connMD5); return null;}
+  const __cols = await getTableCols(_connMD5, _args.schema_name, _args.table_name);
   const __targetData = _.pick(_args.columns, _.map(__cols, _e => _e["column_name"]) );
-  $insDB.query('insert into ' + _args.schema_name + '.' + _args.table_name + '(${this:name}) values (${this:csv})', __targetData);
+  $insDBs[_connMD5].query('insert into ' + _args.schema_name + '.' + _args.table_name + '(${this:name}) values (${this:csv})', __targetData);
   
 }
-async function executeQuery(_query, _args){
+async function executeQuery(_connMD5, _query, _args){
+  if(!_.has($insDBs, _connMD5)){__$log.error("Invalid db connection <%s>", _connMD5); return null;}
   __$log.info("[executeQuery] query: <%s>, parameters: <%s>", _query, util.inspect(_args));
   return await new Promise((_resl, _rej) => {
-    $insDB.query(_query, _args).then(_data => _resl(1)).catch(_err => _rej(_err)); 
+    $insDBs[_connMD5].query(_query, _args).then(_data => _resl(1)).catch(_err => _rej(_err)); 
   });
 }
 
-async function pushTableData(_args){
+async function pushTableData(_connMD5, _args){
+  if(!_.has($insDBs, _connMD5)){__$log.error("Invalid db connection <%s>", _connMD5); return null;}
   __$log.debug("The parameters is <%s>", util.inspect(_args.component_name.split(".")));
   const __comp = _args.component_name.split(".");
   __$log.debug("schema: <%s>, table_name: <%s>", __comp[0], __comp[1]);
-  var __ret = await getTableKey(__comp[0], __comp[1]);
+  var __ret = await getTableKey(_connMD5, __comp[0], __comp[1]);
   __$log.debug("The result is <%s>", util.inspect(__ret));
 
-  const __colsType = await getTableColsType(__comp[0], __comp[1]);
+  const __colsType = await getTableColsType(_connMD5, __comp[0], __comp[1]);
   __$log.debug("The column type is <%s>", JSON.stringify(__colsType));
 
-  __ret = await $insDB.tx(_tx => {
+  __ret = await $insDBs[_connMD5].tx(_tx => {
     const __funcUpdate = (_row) => {
       __$log.debug("The pk is <%s>", JSON.stringify(__ret));
       const __where = _(__ret).map(_e => _e["column_name"] + " = '" + (_.has(_row, ["$oData", _e["column_name"]])?_row["$oData"][_e["column_name"]]:_row[_e["column_name"]]) + "'").value()

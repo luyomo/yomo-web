@@ -13,7 +13,6 @@ const db  = require('yomo-db')
     , util = require('util')
     , _ = require("lodash");
 
-db.pg.initConn(cfgData["config-db"]);
 
 _$log.level = cfgData.log_mode?cfgData.log_mode:'info';
 
@@ -66,6 +65,16 @@ class UserController {
   async chkUserAuth(_ctx, _next){
     try
     {
+      const __md5 = db.pg.initConn({ host     : _ctx.headers.db_host
+                                   , port     : _ctx.headers.db_port
+                                   , database : _ctx.headers.db_name
+                                   , user     : _ctx.headers.db_user
+                                   , password : _ctx.headers.db_pass
+                                   , application_name : "WEB TEST" });
+
+      if(!_.has(_ctx, 'data')){ _ctx['data'] = {}; }
+      _ctx.data["connMD5"] = __md5;
+
       _$log.info("--------Checking the authentication");
       _$log.debug("The cookies is <%s>", _ctx.cookies.get('idtoken'));
 
@@ -98,18 +107,18 @@ class UserController {
   }
 
   async fetchMenuList(ctx) {
-    const __ret = await db.pg.pgGetTableData({"schema_name" : "yomo", "table_name": "vw_menu"});
+    const __ret = await db.pg.pgGetTableData(ctx.data.connMD5, {"schema_name" : "yomo", "table_name": "vw_menu"});
     ctx.body = "Hello world"; 
   }
 
   async fetchPGData(ctx, next) {
     _$log.info("[fetchPGData] [url=<%s>]", ctx.request.url);
-    ctx.body = await db.pg.pgGetTableData( getRequestData(ctx.request.url ));
+    ctx.body = await db.pg.pgGetTableData(ctx.data.connMD5, getRequestData(ctx.request.url ));
   }
 
   async pushPGData(ctx, next) {
-    _$log.info("[pushPGData] [data=<%s>]", ctx.request.rawBody);
-    const __ret = await db.pg.pgPushTableData(JSON.parse(ctx.request.rawBody));
+    _$log.info("[pushPGData][connMD5=<%s>] [data=<%s>]", ctx.data.connMD5, ctx.request.rawBody);
+    const __ret = await db.pg.pgPushTableData(ctx.data.connMD5, JSON.parse(ctx.request.rawBody));
     _$log.debug("Return before ret is <%s>", JSON.stringify(__ret));
     ctx.body = __ret;
   }
@@ -130,32 +139,32 @@ class UserController {
       }else if(_row.comp_type === "button"){
         __templateName = "/system/new-page/template-003";
       }
-      db.pg.pgPushTableData({"component_name": "yomo.v_cmpt_master", "user_data": [_row]});
+      db.pg.pgPushTableData(ctx.data.connMD5, {"component_name": "yomo.v_cmpt_master", "user_data": [_row]});
 
       //await db.pg.pgExecuteQuery("insert into v_page_params(id, page_name, data_id, attr_key, attr_value, comment )  select ${xlsID}, page_name, data_id, 'cmpt_id', ${xlsID}::varchar, 'Generated from pushNewXls' from v_page_params where id = (${xlsID}/10)::int*10 ", {"prevXlsID" : __prevID, "xlsID" : _row["cmpt_id"]});
 
-      await db.pg.pgExecuteQuery("insert into v_cmpt_conf(cmpt_id, attr_id, name, value, disabled_flag) select ${cmpt_id}, attr_id, name, value, disabled_flag from yomo_template.tpl_vw_cmpt_conf where template_name = ${template_name}", {template_name: __templateName, "cmpt_id" : _row["cmpt_id"]});
+      await db.pg.pgExecuteQuery(ctx.data.connMD5, "insert into v_cmpt_conf(cmpt_id, attr_id, name, value, disabled_flag) select ${cmpt_id}, attr_id, name, value, disabled_flag from yomo_template.tpl_vw_cmpt_conf where template_name = ${template_name}", {template_name: __templateName, "cmpt_id" : _row["cmpt_id"]});
 
-      await db.pg.pgExecuteQuery("insert into v_cmpt_col_conf(cmpt_id, col_id, attr_id, name, value) select ${cmpt_id}, col_id, attr_id, name, value from yomo_template.tpl_vw_cmpt_col_conf  where template_name = ${template_name}", {template_name: __templateName, "cmpt_id" : _row["cmpt_id"]} );
+      await db.pg.pgExecuteQuery(ctx.data.connMD5, "insert into v_cmpt_col_conf(cmpt_id, col_id, attr_id, name, value) select ${cmpt_id}, col_id, attr_id, name, value from yomo_template.tpl_vw_cmpt_col_conf  where template_name = ${template_name}", {template_name: __templateName, "cmpt_id" : _row["cmpt_id"]} );
     };
 
     const __funcUpdateExcel = async (_row) => {
-      db.pg.pgPushTableData({"component_name": "yomo.vw_cmpt_master", "user_data": [_row]});
+      db.pg.pgPushTableData(ctx.data.connMD5, {"component_name": "yomo.vw_cmpt_master", "user_data": [_row]});
     };
 
     const __funcDeleteExcel = async (_row) => {
       _$log.debug("Starting to delete one excel");
       //- Delete from v_cmpt_col_conf
-      await db.pg.pgExecuteQuery("delete from v_cmpt_col_conf where cmpt_id = ${cmpt_id}", {"cmpt_id" : _row["cmpt_id"]});
+      await db.pg.pgExecuteQuery(ctx.data.connMD5, "delete from v_cmpt_col_conf where cmpt_id = ${cmpt_id}", {"cmpt_id" : _row["cmpt_id"]});
 
       //- Delete from v_cmpt_conf
-      await db.pg.pgExecuteQuery("delete from vw_cmpt_conf where cmpt_id = ${cmpt_id}", {"cmpt_id" : _row["cmpt_id"]});
+      await db.pg.pgExecuteQuery(ctx.data.connMD5, "delete from vw_cmpt_conf where cmpt_id = ${cmpt_id}", {"cmpt_id" : _row["cmpt_id"]});
 
       //- Delete from v_cmpt_master
-      await db.pg.pgExecuteQuery("delete from vw_cmpt_master where cmpt_id = ${cmpt_id}", {"cmpt_id" : _row["cmpt_id"]});
+      await db.pg.pgExecuteQuery(ctx.data.connMD5, "delete from vw_cmpt_master where cmpt_id = ${cmpt_id}", {"cmpt_id" : _row["cmpt_id"]});
       
       //- Delete from v_page_params
-      await db.pg.pgExecuteQuery("delete from v_page_params where attr_key = 'cmpt_id' and attr_value::int = ${cmpt_id}", {"cmpt_id" : _row["cmpt_id"]});
+      await db.pg.pgExecuteQuery(ctx.data.connMD5, "delete from v_page_params where attr_key = 'cmpt_id' and attr_value::int = ${cmpt_id}", {"cmpt_id" : _row["cmpt_id"]});
     }
     //_.map(__data.user_data, _row => {
     //  console.log("The data is <%s>", JSON.stringify(_row));
@@ -190,9 +199,9 @@ class UserController {
       };
       //-- * Get next id
       //const __ret = await db.pg.pgGetOneQueryData( _pageData.pid < 90000?"select coalesce(max(id), 0)+1 as id from v_menu where id < 100":"select coalesce(max(id), 0)+1 as id from v_menu where id between 90000 and 90099");
-      const __ret = await db.pg.pgGetOneQueryData( __func_fetchIDQuery( _pageData.pid));
+      const __ret = await db.pg.pgGetOneQueryData(ctx.data.connMD5,  __func_fetchIDQuery( _pageData.pid));
       const __pageData = _.assignIn(_pageData, __ret);
-      await db.pg.insertTableData({"schema_name":"yomo", "table_name":"v_menu", "columns": __pageData});
+      await db.pg.insertTableData(ctx.data.connMD5, {"schema_name":"yomo", "table_name":"v_menu", "columns": __pageData});
       //-- * Insert into database 
     }; 
 
@@ -211,7 +220,7 @@ class UserController {
       var __nxtID;
       if(_pageData["id"] === undefined || _pageData["id"] === ""){
         _$log.debug("Come fere to chec the data ")
-        __nxtID = await db.pg.pgGetOneQueryData(__func_fetchBaseIDQuery(_pageData.pid));
+        __nxtID = await db.pg.pgGetOneQueryData(ctx.data.connMD5, __func_fetchBaseIDQuery(_pageData.pid));
       }else {
         __nxtID = {id: _pageData["id"], base_id: _pageData["id"]};
       }
@@ -220,20 +229,20 @@ class UserController {
       _$log.debug("The data became to <%s>", JSON.stringify(__pageData));
 
       //- * Menu insert
-      await db.pg.insertTableData({"schema_name":"yomo", "table_name":"v_menu", "columns": __pageData});
+      await db.pg.insertTableData(ctx.data.connMD5, {"schema_name":"yomo", "table_name":"v_menu", "columns": __pageData});
       // console.log("The page name is <%s>", _pageData.href.replace('/main.html', ''));
       //
       //- * vw_page_data_struct data insert
-      await db.pg.pgExecuteQuery("insert into yomo.vu_page_data_struct(id, parent_node, child_node, type, action_name, comment ) select id + ${base_id} as id, replace(parent_node, '{page_name}', ${page_name}) as parent_node, child_node, type, action_name, comment from yomo_template.tpl_vw_page_data_struct  where template_name = ${template_name}", __pageData);
+      await db.pg.pgExecuteQuery(ctx.data.connMD5, "insert into yomo.vu_page_data_struct(id, parent_node, child_node, type, action_name, comment ) select id + ${base_id} as id, replace(parent_node, '{page_name}', ${page_name}) as parent_node, child_node, type, action_name, comment from yomo_template.tpl_vw_page_data_struct  where template_name = ${template_name}", __pageData);
 
       //- * page_param
-       await db.pg.pgExecuteQuery("insert into yomo.vu_page_params(id, page_name, data_id, attr_key, attr_value, comment) select id + ${base_id} as id , replace(page_name, '{page_name}', ${page_name}) as page_name , case when data_id < 90000 then data_id + ${base_id} else data_id end as data_id, attr_key, case when attr_key in ('cmpt_id', 'comp_id') then (attr_value::int + ${base_id})::varchar else attr_value end as attr_value , comment from yomo_template.tpl_vw_page_params where template_name = '/system/new-page/template-001'", __pageData);
+       await db.pg.pgExecuteQuery(ctx.data.connMD5, "insert into yomo.vu_page_params(id, page_name, data_id, attr_key, attr_value, comment) select id + ${base_id} as id , replace(page_name, '{page_name}', ${page_name}) as page_name , case when data_id < 90000 then data_id + ${base_id} else data_id end as data_id, attr_key, case when attr_key in ('cmpt_id', 'comp_id') then (attr_value::int + ${base_id})::varchar else attr_value end as attr_value , comment from yomo_template.tpl_vw_page_params where template_name = '/system/new-page/template-001'", __pageData);
 
-      await db.pg.pgExecuteQuery("insert into yomo.vu_cmpt_master(cmpt_id, cmpt_uid, cmpt_name, comment) select cmpt_id+${base_id} as cmpt_id, cmpt_uid,  cmpt_name, comment from yomo_template.tpl_vw_cmpt_master where template_name = ${template_name}", __pageData);
+      await db.pg.pgExecuteQuery(ctx.data.connMD5, "insert into yomo.vu_cmpt_master(cmpt_id, cmpt_uid, cmpt_name, comment) select cmpt_id+${base_id} as cmpt_id, cmpt_uid,  cmpt_name, comment from yomo_template.tpl_vw_cmpt_master where template_name = ${template_name}", __pageData);
       
-      await db.pg.pgExecuteQuery("insert into yomo.vu_cmpt_conf(cmpt_id, attr_id, name, value) select cmpt_id + ${base_id} as cmpt_id, attr_id, name, value from yomo_template.tpl_vw_cmpt_conf where template_name = ${template_name}", __pageData);
+      await db.pg.pgExecuteQuery(ctx.data.connMD5, "insert into yomo.vu_cmpt_conf(cmpt_id, attr_id, name, value) select cmpt_id + ${base_id} as cmpt_id, attr_id, name, value from yomo_template.tpl_vw_cmpt_conf where template_name = ${template_name}", __pageData);
       
-      await db.pg.pgExecuteQuery("insert into yomo.vu_cmpt_col_conf(cmpt_id, col_id, attr_id, name, value) select cmpt_id + ${base_id} as cmpt_id, col_id, attr_id, name, value from yomo_template.tpl_vw_cmpt_col_conf  where template_name = ${template_name}", __pageData);
+      await db.pg.pgExecuteQuery(ctx.data.connMD5, "insert into yomo.vu_cmpt_col_conf(cmpt_id, col_id, attr_id, name, value) select cmpt_id + ${base_id} as cmpt_id, col_id, attr_id, name, value from yomo_template.tpl_vw_cmpt_col_conf  where template_name = ${template_name}", __pageData);
 
     }; 
 
@@ -272,7 +281,7 @@ class UserController {
   }
 
   async getPagePermission (_ctx, next) {
-    const __ret = await db.pg.pgGetAnyQueryData("with recursive base_tbl as ( \
+    const __ret = await db.pg.pgGetAnyQueryData(ctx.data.connMD5, "with recursive base_tbl as ( \
     select t1.role_name, \
            t1.object_name, \
            t1.priv \

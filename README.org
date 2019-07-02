@@ -2,40 +2,41 @@
 ** Startup one postgres database
 *** Database preparation
 #+BEGIN_SRC org
-$docker run -d -p 5432:5432 postgres:latest
-$docker exec -it 92ea5175b657 psql -U postgres
+$docker network create webtest
+$docker run -d --name pgtest --network=webtest postgres:latest
+$docker exec -it pgtest psql -U postgres
 postgres=# create user yomoweb password 'yomoweb';
 postgres=# alter user yomoweb set search_path=yomo, yomo_template, yomo_example;
-postgres=# create database testweb04;
-postgres=# grant all on database testweb04 to yomoweb;
+postgres=# create database testweb;
+postgres=# grant all on database testweb to yomoweb;
 GRANT
-$ docker exec -it 92ea5175b657 psql testweb -U yomoweb
+$ docker exec -it pgtest psql testweb -U yomoweb
 psql (11.1 (Debian 11.1-1.pgdg90+1))
 Type "help" for help.
 #+END_SRC
 *** Run script to initialize the database
  Initialize the database for the new page
  #+BEGIN_SRC
- docker run -e PG_HOST=localhost -e PG_PORT=5432 -e PG_DATABASE=testweb04 -e PG_USER=yomoweb -e PG_PASSWORD=yomoweb -e WEB_HEADER=web-demo yomo-web:latest init
+ docker run --network=webtest -e PG_HOST=pgtest -e PG_PORT=5432 -e PG_DATABASE=testweb -e PG_USER=yomoweb -e PG_PASSWORD=yomoweb -e WEB_HEADER=web-demo yomo-web:0.0.8-3 init
  #+END_SRC
 
  #+attr_latex: align=|c|c|c|
- | ENV variable | value     | comment                                       |
- |--------------+-----------+-----------------------------------------------|
- | PG_HOST      | localhost | Database hostname                             |
- | PG_DATABASE  | testweb04 | Database name                                 |
- | PG_PORT      | 5432      | Database port                                 |
- | PG_USER      | yomoweb   | DB user                                       |
- | PG_PASSWORD  | yomoweb   | DB password                                   |
- | WEB_HEADER   | web-demo  | The url name space. Used in the nginx as well |
+ | ENV variable | value    | comment                                       |
+ |--------------+----------+-----------------------------------------------|
+ | PG_HOST      | pgtest   | Database hostname                             |
+ | PG_DATABASE  | testweb  | Database name                                 |
+ | PG_PORT      | 5432     | Database port                                 |
+ | PG_USER      | yomoweb  | DB user                                       |
+ | PG_PASSWORD  | yomoweb  | DB password                                   |
+ | WEB_HEADER   | web-demo | The url name space. Used in the nginx as well |
 
 *** Add admin user
 Add the first user to the new environment. Replace the *testUser* to your user name for first login
 #+BEGIN_SRC
+$ docker exec -it -e COLUMNS="`tput cols`" -e LINES="`tput lines`" pgtest psql testweb -U yomoweb 
 postgres=> insert into yomo.usr_master(role_name, role_type, start_date, thru_date
         => , comment, created_by, created_date )
         => values('testUser', 'u', '2018-01-01', null, null, 'init', current_timestamp);
-
 
 postgres=> insert into yomo.usr_role_rel(parent_role, child_role, start_date, thru_date, created_by, created_date )
         => values('role-sys-rw', 'testUser', '2019-03-20', null, 'init', '2019-03-20')
@@ -93,36 +94,25 @@ $mv cert /etc/yomo-web/jwks_files
 #+BEGIN_SRC
 version: '3.1'
 services:
-  redis:
-    image: "redis"
-    networks:
-      yomo-web:
-  web:
-    image: "yomo-web"
-    depends_on:
-      - redis
+  testweb:
+    image: "yomo-web:0.0.8-3"
+    container_name: "demo-web"
     environment:
-      - PG_HOST=localhost                                       #DB connection info
-      - PG_PORT=5432
-      - PG_DATABASE=testweb04
-      - PG_USER=yomoweb
-      - PG_PASSWORD=yomoweb
-      - WEB_HEADER=web-demo                                     #The web's name space
       - CLIENT_ID=221648707929-g2h5t2apgrljsk3onle86uvdob89q26l.apps.googleusercontent.com   # Google authentication client_id
       - API_KEY=AIzaSyB3yU6AL26r8AoU8JGztCoavyNOiSMQGZ8                                      # Google authentication's API KEY
-      - http_proxy=http://proxy:8080                                          #Used for google verification
-      - https_proxy=http://proxy:8080                                         #Used for google verification
+      - http_proxy=http://10.136.0.60:8080                                                   #Used for google verification
+      - https_proxy=http://10.136.0.60:8080                                                  #Used for google verification
     ports:
-      - 8084:8083
-      - 8086:8084
+      - 8083:8083
+      - 8084:8084
 #    volumes:                                                                     #Local google verification
 #      - /etc/yomo-web/openid-configuration:/app/etc/certs/openid-configuration
 #      - /etc/yomo-web/jwks_files:/app/etc/certs/jwks_files
-    networks:
-      yomo-web:
 
 networks:
-  yomo-web:
+  default:
+    external:
+      name: webtest
 #+END_SRC
 
 *** Start the container
@@ -130,21 +120,22 @@ networks:
 $docker-compose up -d
 #+END_SRC
 ** Set the proxy in the nginx
-*** frontend proxy
+***  proxy
+Replace the hostname to yours
 #+BEGIN_SRC
-location /web-demo/ {                                            #web-demo => Your web-header
-    proxy_pass http://hostname:8084;                             #The front hostname and port
+location /web-demo/ {                                               #web-demo => Your web-header
+    proxy_pass http://hostname:8084;                                #The front hostname and port
     proxy_http_version 1.1;
     proxy_redirect     off;
     proxy_set_header   Host $host;
-    proxy_set_header   ROOT_PATH /web-demo;                      #web-demo => Your web-header
+    proxy_set_header   ROOT_PATH /web-demo;                         #web-demo => Your web-header
     proxy_set_header   username $remote_user;
-    proxy_set_header   DB_HOST xxx.xxx.xxx.xxx;                  #DB connection info
+    proxy_set_header   DB_HOST pgtest;                              #DB connection info
     proxy_set_header   DB_PORT 5432;
     proxy_set_header   DB_NAME testweb;
     proxy_set_header   DB_USER yomoweb;
     proxy_set_header   DB_PASS yomoweb;
-    proxy_set_header   MENU_TITLE "Demo Menu";                   #Title for the web page
+    proxy_set_header   MENU_TITLE "Demo Menu";                      #Title for the web page
 
     proxy_set_header   DISCOVERY_DOCS https://www.googleapis.com/discovery/v1/apis/drive/v3/rest;
     proxy_set_header   SCOPE https://www.googleapis.com/auth/drive;
@@ -162,9 +153,7 @@ location /web-demo-static/ {
 
     rewrite /web-demo-static(.*) $1 break;
 }
-#+END_SRC
-*** backend proxy
-#+BEGIN_SRC
+
 location /web-demo-bg/ {                                             #web-demo => Your web-header
     proxy_pass http://hostname:8086;                                 #The backend service's hostname and port
     proxy_http_version 1.1;
@@ -173,6 +162,13 @@ location /web-demo-bg/ {                                             #web-demo =
     proxy_set_header   ROOT_PATH /web-demo-bg;                       #web-demo-bg => web-header-bg
     proxy_set_header   username $remote_user;
 
+    proxy_set_header   DB_HOST pgtest;                               #DB connection info
+    proxy_set_header   DB_PORT 5432;
+    proxy_set_header   DB_NAME testweb;
+    proxy_set_header   DB_USER yomoweb;
+    proxy_set_header   DB_PASS yomoweb;
+    proxy_set_header   MENU_TITLE "Demo Menu";                       #Title for the web page
+
     rewrite /web-demo-bg(.*) $1 break;                               #web-demo-bg => web0header-bg
 }
 #+END_SRC
@@ -180,8 +176,16 @@ location /web-demo-bg/ {                                             #web-demo =
 #+BEGIN_SRC
    #demo
     include /etc/nginx/nginx.d/dev-demo.conf;
-    include /etc/nginx/nginx.d/web-demo-bg.conf; 
 #+END_SRC
+*** External dependency
+**** Developed ddl data 
+   Resource extraction (To gather)
+
+**** Static Web
+#+BEGIN_SRC
+$docker-compose up -d
+#+END_SRC
+**** db rest
 * Confirmation
 ** excel
 *** Common excel
@@ -222,9 +226,16 @@ location /web-demo-bg/ {                                             #web-demo =
    | 100 |   2 | Test Page | Test Page | /Test/SubTest/test-page/main.html | non-check    |
   - Permission
     #+BEGIN_SRC
-insert into yomo.usr_priv_master values (5, 'role-sys-rw', '/Test', 'rwx', '2018-01-01', null, null, 'init', current_timestamp);
-insert into yomo.usr_priv_master values (6, 'role-sys-ro', '/Test', 'rwx', '2018-01-01', null, null, 'init', current_timestamp);
+insert into yomo.usr_priv_master values (5, 'role-sys-rw', '/Test', 'menu', 'rwx', '2018-01-01', null, null, 'init', current_timestamp);
+insert into yomo.usr_priv_master values (6, 'role-sys-ro', '/Test', 'menu', 'rwx', '2018-01-01', null, null, 'init', current_timestamp);
     #+END_SRC
+** Clean
+#+BEGIN_SRC
+$docker stop pgtest
+$docker rm pgtest
+$docker network rm webtest
+#+END_SRC
+
 * Internal Logical
 ** Approval process
   + rsa key
@@ -547,6 +558,7 @@ pg=> update v_cmpt_col_conf set value = 'gui_seq' where (cmpt_id, col_id) = (901
 *** Remove the db info from yomo backend
 
 ** 0.0.9
+*** avro feature addition
 *** move the frontend and backend to pm2
 *** Convert the handsontable to react
 *** Add data push from backend to frontend : KAFKA -> backend -> frontend handsontable
@@ -566,7 +578,7 @@ pg=> update v_cmpt_col_conf set value = 'gui_seq' where (cmpt_id, col_id) = (901
 *** New page -> Href automatic generation without manual input
 *** Add data export feature from the image/container
 *** Add one button to export one page's data
-
+*** Bug: In the [new page], when inserting second row without refresh the page, the id will be duplicate.
 * QA
 ** Dropdown not invisible in the handsontable
   - Need to remove the height for the handsontable
