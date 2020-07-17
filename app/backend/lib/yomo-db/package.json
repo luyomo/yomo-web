@@ -11,7 +11,7 @@
     , "redis-sentinel"              : "0.3.3"
     , "bluebird"                    : "3.5.1"
     , "pg-promise"                  : "8.4.4"
-    , "lodash"                      : "4.17.10"
+    , "lodash"                      : "4.17.19"
     , "crypto"                      : "1.0.1"
     , "path"                        : "0.12.7"
     , "fs"                          : "0.0.1-security"
